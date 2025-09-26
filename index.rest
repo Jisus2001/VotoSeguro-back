@@ -1,0 +1,12 @@
+###
+@BASE_URL = http://localhost
+@AUTH_TOKEN = eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1aWQiOiIxMiIsImlhdCI6MTc1MDc5NzE3MywiZXhwIjoxNzUwODMzMTczfQ.B_8Uo8zcbNrYDMlaEgIHRZk_apxrN4aWlmH1JJeAZhQ
+
+# 
+# Rutas del archivo misc.js
+# 
+
+###
+GET {{ BASE_URL }}/misc/Listar HTTP/1.1
+Content-Type: application/json
+Origin: {{ BASE_URL }}
