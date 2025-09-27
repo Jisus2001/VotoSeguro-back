@@ -1,5 +1,5 @@
 ###
-@BASE_URL = http://localhost
+@BASE_URL = http://localhost:80
 @AUTH_TOKEN = eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1aWQiOiIxMiIsImlhdCI6MTc1MDc5NzE3MywiZXhwIjoxNzUwODMzMTczfQ.B_8Uo8zcbNrYDMlaEgIHRZk_apxrN4aWlmH1JJeAZhQ
 
 # 
@@ -7,6 +7,51 @@
 # 
 
 ###
-GET {{ BASE_URL }}/misc/Listar HTTP/1.1
+GET {{ BASE_URL }}/personas/Listar HTTP/1.1
 Content-Type: application/json
-Origin: {{ BASE_URL }}
+
+
+###
+GET {{ BASE_URL }}/personas/ObtenerPersona/12 HTTP/1.1
+Content-Type: application/json
+
+
+###
+POST  {{ BASE_URL }}/personas/Agregar HTTP/1.1
+Content-Type: application/json
+
+ {
+        "Identificacion":13,
+         "Nombre":"jesus",
+          "Contrasenna":"123",
+         "Telefono":"8762",
+         "Correo":"sdfewer" 
+    }
+
+###
+PUT  {{ BASE_URL }}/personas/Actualizar HTTP/1.1
+Content-Type: application/json
+
+ {
+      
+        "Identificacion":12,
+         "Nombre":"jesussssssssssssf",
+          "Contrasenna":"123",
+         "Telefono":"8762",
+         "Correo":"sdfewer" 
+    }
+
+
+###
+DELETE  {{ BASE_URL }}/personas/Eliminar/13 HTTP/1.1
+Content-Type: application/json
+
+
+###
+POST  {{ BASE_URL }}/personas/ValidarSesion HTTP/1.1
+Content-Type: application/json
+
+ {
+        "Identificacion":12,
+          "Contrasenna":"123"
+    }

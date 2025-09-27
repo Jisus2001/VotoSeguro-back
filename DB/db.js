@@ -1,8 +1,8 @@
 
-const mongoose = require('mongoose');
+import mongoose from 'mongoose';
 
 // Reemplaza con tu cadena de conexión real
-const MONGODB_URI = 'mongodb+srv://cluster0.c0xwy.mongodb.net/" --apiVersion 1 --username <jisus>';
+const MONGODB_URI = 'mongodb+srv://jisus:123@cluster0.c0xwy.mongodb.net/VotoSeguro';
 
 async function connectDB() {
   try {
@@ -15,4 +15,4 @@ async function connectDB() {
   }
 }
 
-module.exports = connectDB;
+export default  connectDB;

@@ -1,12 +1,16 @@
-const mongoose = require('mongoose');
+import mongoose from 'mongoose';
 
 const PersonasSchema = mongoose.Schema(
     {
         Identificacion: {
             type: String,
+            unique: true,
             required: true
         },
          Nombre: {
+            type: String,
+            required: true
+        },Contrasenna: {
             type: String,
             required: true
         },
@@ -21,4 +25,4 @@ const PersonasSchema = mongoose.Schema(
 
 const Personas= mongoose.model('Personas',PersonasSchema);
 
-module.exports = Personas;
+ export default Personas;

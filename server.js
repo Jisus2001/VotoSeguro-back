@@ -1,6 +1,7 @@
-const express = require('express');
-const db = require ('./DB/db.js');
-const rutas = require ('./rutas.js')
+import express from "express"
+import db from "./DB/db.js"
+import rutas from './rutas.js';
+
 
 //aplicacion y variables
 const app= express();
@@ -13,7 +14,8 @@ app.use(express.urlencoded({ extended: true }));
 
 
 db();
-rutas(app);
+rutas(app)
+//app.use("/",Personas)
 
 // Inicia el servidor
 app.listen(PORT, () => {

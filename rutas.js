@@ -1,9 +1,9 @@
 
-const rutasDePersonas = require('./Servicios/Controllers/Personas.js');
+import rutasDePersonas from './Servicios/Controllers/Personas.js';
 
 function asignarRutasAExpress(app) {
-  app.use('/personas', rutasDePersonas);
+   app.use('/personas', rutasDePersonas);
 
 }
 
-module.exports = asignarRutasAExpress;
+export default asignarRutasAExpress;
