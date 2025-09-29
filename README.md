@@ -1,4 +1,4 @@
-#VotoSeguro - Plataforma de Elecciones Electrónicas (Tarea I)
+# VotoSeguro - Plataforma de Elecciones Electrónicas (Tarea I)
 
 
 Este documento describe la solución técnica, la arquitectura y los estándares de calidad definidos por el equipo para la implementación de los requerimientos de la Tarea 1 del curso ISW-1411 (Calidad del Software).
