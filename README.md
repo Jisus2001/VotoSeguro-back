@@ -1,4 +1,4 @@
-#VotoSeguro - Plataforma de Elecciones Electrónicas (Tarea I)
+# VotoSeguro - Plataforma de Elecciones Electrónicas (Tarea I)
 
 
 Este documento describe la solución técnica, la arquitectura y los estándares de calidad definidos por el equipo para la implementación de los requerimientos de la Tarea 1 del curso ISW-1411 (Calidad del Software).
@@ -92,6 +92,7 @@ Deberías ver los siguiente mensajes:
     ```bash 
         cd ../client # O la ruta donde se encuentre el código de Angular 
         npm install ng serve # Inicia el servidor de desarrollo de Angular
+        npm serve #Para ejecutar el proyecto
     ```
 2. ** Acceso **
 Una vez que ambos servidores están corriendo, la aplicación estará disponible en `http://localhost:4200` (puerto predeterminado de Angular). 
