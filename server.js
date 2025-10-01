@@ -1,6 +1,7 @@
 import express from "express"
 import db from "./DB/db.js"
 import rutas from './rutas.js';
+import cors from 'cors'
 
 
 //aplicacion y variables
@@ -12,6 +13,8 @@ const PORT = process.env.PORT || 80;
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 
+//
+app.use(cors())
 
 db();
 rutas(app)
