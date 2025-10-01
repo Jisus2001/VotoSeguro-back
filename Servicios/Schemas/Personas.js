@@ -19,6 +19,9 @@ const PersonasSchema = mongoose.Schema(
         },
          Correo: {
             type: String
+        },
+        Perfil : {
+           type:String
         }
     }
 );
