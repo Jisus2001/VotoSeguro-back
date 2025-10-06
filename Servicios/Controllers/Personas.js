@@ -62,7 +62,7 @@ router.post("/ValidarSesion", async (req, res) => {
     return res.status(401).json({ mensaje: "Credenciales incorrectas" });
   }
 
-  return res.status(200).json({ mensaje: "Inicio de sesión exitoso" });
+  return res.status(200).json(Object.assign(persona,{ mensaje: "Inicio de sesión exitoso" }));
 });
 
 export default router;

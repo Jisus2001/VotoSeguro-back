@@ -3,7 +3,7 @@
 @AUTH_TOKEN = eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1aWQiOiIxMiIsImlhdCI6MTc1MDc5NzE3MywiZXhwIjoxNzUwODMzMTczfQ.B_8Uo8zcbNrYDMlaEgIHRZk_apxrN4aWlmH1JJeAZhQ
 
 # 
-# Rutas del archivo misc.js
+# Rutas de Personas
 # 
 
 ###
@@ -12,7 +12,7 @@ Content-Type: application/json
 
 
 ###
-GET {{ BASE_URL }}/personas/ObtenerPersona/12 HTTP/1.1
+GET {{ BASE_URL }}/personas/ObtenerPersona/155821845336 HTTP/1.1
 Content-Type: application/json
 
 
@@ -21,12 +21,12 @@ POST  {{ BASE_URL }}/personas/Agregar HTTP/1.1
 Content-Type: application/json
 
  {
-        "Identificacion":155821845336,
-         "Nombre":"jesus",
+        "Identificacion":101010101,
+         "Nombre":"usuario de prueba",
           "Contrasenna":"123",
          "Telefono":"8762",
          "Correo":"sdfewer" ,
-         "Perfil": "Administrador"
+         "Perfil": "Votante"
     }
 
 ###
@@ -53,6 +53,80 @@ POST  {{ BASE_URL }}/personas/ValidarSesion HTTP/1.1
 Content-Type: application/json
 
  {
-        "Identificacion":12,
+        "Identificacion":101010101,
           "Contrasenna":"123"
     }
+
+# 
+# Rutas de Sedes
+# 
+
+###
+GET {{ BASE_URL }}/sedes/Listar HTTP/1.1
+Content-Type: application/json
+
+###
+GET {{ BASE_URL }}/sedes/ObtenerSede/1 HTTP/1.1
+Content-Type: application/json
+
+###
+POST {{ BASE_URL }}/sedes/Agregar HTTP/1.1
+Content-Type: application/json
+
+{
+    "Nombre": "Sede Central UTN"
+}
+
+###
+PUT {{ BASE_URL }}/sedes/Actualizar/1 HTTP/1.1
+Content-Type: application/json
+
+{
+    "Nombre": "Sede Central UTN Actualizada"
+}
+
+###
+DELETE {{ BASE_URL }}/sedes/Eliminar/1 HTTP/1.1
+Content-Type: application/json
+
+# 
+# Rutas de Elecciones
+# 
+
+###
+GET {{ BASE_URL }}/elecciones/Listar HTTP/1.1
+Content-Type: application/json
+
+###
+GET {{ BASE_URL }}/elecciones/Vigentes HTTP/1.1
+Content-Type: application/json
+
+###
+GET {{ BASE_URL }}/elecciones/ObtenerEleccion/68e348611a7a4aee788adeb7 HTTP/1.1
+Content-Type: application/json
+
+###
+POST {{ BASE_URL }}/elecciones/Agregar HTTP/1.1
+Content-Type: application/json
+
+{
+    "Nombre": "Elecciones Estudiantiles 2025",
+    "SedeId": 1,
+    "FechaInicio": "2025-10-05T08:00:00.000Z",
+    "FechaFin": "2025-10-15T18:00:00.000Z"
+}
+
+###
+PUT {{ BASE_URL }}/elecciones/Actualizar/68e348611a7a4aee788adeb7 HTTP/1.1
+Content-Type: application/json
+
+{
+    "Nombre": "Elecciones Estudiantiles 2025 - Segunda Vuelta",
+    "SedeId": 1,
+    "FechaInicio": "2025-10-12T08:00:00.000Z",
+    "FechaFin": "2025-10-12T18:00:00.000Z"
+}
+
+###
+DELETE {{ BASE_URL }}/elecciones/Eliminar/1234567890 HTTP/1.1
+Content-Type: application/json
