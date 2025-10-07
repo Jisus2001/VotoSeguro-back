@@ -19,6 +19,20 @@ const EleccionesSchema = mongoose.Schema(
         FechaFin: {
             type: Date,
             required: true
+        },
+        PerfilId: {
+            type: Number,
+            required: true,
+            ref: 'PerfilesElecciones',  // Referencia al schema de PerfilesElecciones
+            refPath: 'IdPerfil'  // Especifica que debe usar el campo IdPerfil para la referencia
+        },
+        Candidatos: {
+            type: [{
+                type: String,
+                ref: 'Candidatos',  // Referencia al schema de Candidatos
+                refPath: 'Nombre'   // Especifica que debe usar el campo Nombre para la referencia
+            }],
+            default: []  // Inicia como un array vacío
         }
     }
 );
