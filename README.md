@@ -121,3 +121,25 @@ A continuación, se presenta la lista inicial de pruebas requeridas para verific
 | **Negativa** | Verificar que cuando el Administrador intenta ingresar una **cédula que ya existe**, entonces el sistema impide el registro. |
 | **Adicional** | Verificar que cuando se realiza un registro exitoso, entonces el sistema solicita la **confirmación de registro** al Administrador. |
 
+### A. HU 3 - Creación de Elección
+
+| Tipo | Caso de Validación |
+| :--- | :--- |
+| **Positiva** | Verificar que cuando el Administrador ingresa el **nombre**, la **fecha de inicio** y la **fecha de fin** válidos, entonces el sistema crea la elección exitosamente. |
+| **Negativa** | Verificar que cuando la **fecha de inicio es posterior** a la fecha de fin, entonces el sistema rechaza la creación de la elección y muestra un mensaje claro. |
+| **Negativa** | Verificar que cuando la **fecha de fin es menor** a la fecha de inicio, entonces el sistema rechaza la creación de la elección y muestra un mensaje claro. |
+| **Negativa** | Verificar que cuando se omite algún campo obligatorio (nombre, fecha de inicio o fecha de fin), entonces el sistema impide la creación de la elección. |
+| **Persistencia** | Verificar que una vez creada la elección, los datos se almacenan correctamente en la base de datos. |
+| **Restricción** | Verificar que solo **candidatos registrados** puedan asociarse a la elección. |
+| **Acceso** | Verificar que solo el **rol Administrador** puede acceder a la funcionalidad de creación de elecciones. |
+
+### B. HU 4 - Registro de Candidatos
+
+| Tipo | Caso de Validación |
+| :--- | :--- |
+| **Positiva** | Verificar que cuando el Administrador ingresa el **nombre del candidato** y la **agrupación**, entonces el sistema registra el candidato exitosamente. |
+| **Negativa** | Verificar que cuando se intenta registrar un **candidato con nombre duplicado** en la misma elección, entonces el sistema rechaza el registro y muestra un mensaje claro. |
+| **Persistencia** | Verificar que el candidato queda correctamente **vinculado a la elección** y almacenado en la base de datos. |
+| **Negativa** | Verificar que cuando se omite el nombre o la agrupación, entonces el sistema impide el registro del candidato. |
+| **Acceso** | Verificar que solo el **rol Administrador** puede acceder a la funcionalidad de registro de candidatos. |
+
