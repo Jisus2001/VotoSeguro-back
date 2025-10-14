@@ -10,7 +10,7 @@ router.get("/Listar", async (req, res) => {
     try {
         const elecciones = await Elecciones.find();
         
-        // Para cada elección, buscar su sede y candidatos manualmente
+        // Para cada elección, buscar su sede, perfil y candidatos
         const eleccionesCompletas = await Promise.all(elecciones.map(async (eleccion) => {
             const eleccionObj = eleccion.toObject();
             
@@ -33,12 +33,25 @@ router.get("/Listar", async (req, res) => {
                 };
                 delete eleccionObj.PerfilId;
             }
-            
-            // Obtener candidatos
+
+            // Obtener candidatos con sus perfiles
             if (eleccion.Candidatos && eleccion.Candidatos.length > 0) {
                 const candidatos = await Promise.all(eleccion.Candidatos.map(async (nombreCandidato) => {
                     const candidato = await Candidatos.findOne({ Nombre: nombreCandidato });
-                    return candidato ? candidato.toObject() : null;
+                    if (candidato) {
+                        const candidatoObj = candidato.toObject();
+                        // Obtener el perfil del candidato
+                        const perfilCandidato = await PerfilesElecciones.findOne({ IdPerfil: candidato.PerfilId });
+                        if (perfilCandidato) {
+                            candidatoObj.Perfil = {
+                                IdPerfil: perfilCandidato.IdPerfil,
+                                Descripcion: perfilCandidato.Descripcion
+                            };
+                            delete candidatoObj.PerfilId;
+                        }
+                        return candidatoObj;
+                    }
+                    return null;
                 }));
                 eleccionObj.Candidatos = candidatos.filter(c => c !== null);
             }
@@ -62,8 +75,8 @@ router.get("/Vigentes", async (req, res) => {
             FechaFin: { $gte: fechaActual }      // Fecha de fin mayor o igual a la actual
         });
         
-        // Para cada elección, buscar su sede manualmente
-        const eleccionesConSedes = await Promise.all(elecciones.map(async (eleccion) => {
+        // Para cada elección, buscar su sede, perfil y candidatos
+        const eleccionesCompletas = await Promise.all(elecciones.map(async (eleccion) => {
             const eleccionObj = eleccion.toObject();
             
             // Obtener sede
@@ -85,11 +98,33 @@ router.get("/Vigentes", async (req, res) => {
                 };
                 delete eleccionObj.PerfilId;
             }
+
+            // Obtener candidatos con sus perfiles
+            if (eleccion.Candidatos && eleccion.Candidatos.length > 0) {
+                const candidatos = await Promise.all(eleccion.Candidatos.map(async (nombreCandidato) => {
+                    const candidato = await Candidatos.findOne({ Nombre: nombreCandidato });
+                    if (candidato) {
+                        const candidatoObj = candidato.toObject();
+                        // Obtener el perfil del candidato
+                        const perfilCandidato = await PerfilesElecciones.findOne({ IdPerfil: candidato.PerfilId });
+                        if (perfilCandidato) {
+                            candidatoObj.Perfil = {
+                                IdPerfil: perfilCandidato.IdPerfil,
+                                Descripcion: perfilCandidato.Descripcion
+                            };
+                            delete candidatoObj.PerfilId;
+                        }
+                        return candidatoObj;
+                    }
+                    return null;
+                }));
+                eleccionObj.Candidatos = candidatos.filter(c => c !== null);
+            }
             
             return eleccionObj;
         }));
         
-        res.json(eleccionesConSedes);
+        res.json(eleccionesCompletas);
     } catch (error) {
         console.error('Error al obtener elecciones vigentes:', error);
         res.status(500).json({ error: "Error al obtener las elecciones vigentes" });
