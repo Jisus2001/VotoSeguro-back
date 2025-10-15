@@ -50,9 +50,12 @@ export async function agregarCandidato(data) {
         allowedTags: [],
         allowedAttributes: {}
     });
+    
       if (nombreSanitizado !== data.Nombre) {
         throw new Error("Nombre contiene código malicioso");
     }
+   
+
     data.Nombre = nombreSanitizado;
     // Verificar perfil existe
     const perfil = await PerfilesElecciones.findOne({ IdPerfil: data.PerfilId });
@@ -73,7 +76,13 @@ export async function agregarCandidato(data) {
     });
 
     await candidato.save();
-    return "Candidato agregado correctamente";
+    return {
+            success: true,
+            status: 200,
+            mensaje: "Candidato agregado correctamente"
+        };
+    //
+   
 }
 
 // Actualizar candidato
