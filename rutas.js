@@ -1,5 +1,5 @@
-import rutasDePersonas from './Servicios/Controllers/Personas.js';
-import rutasDeElecciones from './Servicios/Controllers/Elecciones.js';
+import rutasDePersonas from './Servicios/Rutas/Personas.js';
+import rutasDeElecciones from './Servicios/Rutas/Elecciones.js';
 import rutasDeSedes from './Servicios/Controllers/Sedes.js';
 import rutasDePerfiles from './Servicios/Controllers/PerfilesElecciones.js';
 import rutasDeCandidatos from './Servicios/Controllers/Candidatos.js';

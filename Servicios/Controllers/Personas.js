@@ -1,72 +1,96 @@
-import express from "express";
-const router = express.Router();
 import Personas from "../Schemas/Personas.js";
 
-router.get("/Listar", async (req, res) => {
-  console.log(Personas);
-  const personas = await Personas.find();
-  res.status(200).json(personas);
-});
+export const listarPersonas = async () => {
+    try {
+        const personas = await Personas.find();
+        return { success: true, data: personas };
+    } catch (error) {
+        return { success: false, error: "Error al obtener las personas" };
+    }
+};
 
-router.get("/ObtenerPersona/:Identificacion", async (req, res) => {
-  console.log(Personas);
-  const personas = await Personas.findOne({
-    Identificacion: req.params.Identificacion,
-  });
-  res.status(200).json(personas);
-});
+export const obtenerPersona = async (identificacion) => {
+    try {
+        const persona = await Personas.findOne({ Identificacion: identificacion });
+        if (!persona) {
+            return { success: false, error: "Persona no encontrada" };
+        }
+        return { success: true, data: persona };
+    } catch (error) {
+        return { success: false, error: "Error al obtener la persona" };
+    }
+};
 
-router.post("/Agregar", async (req, res) => {
-  const persona = new Personas(req.body);
-  persona
-    .save()
-    .then((doc) => res.json({ mensaje: "Agregado correctamente" }))
-    .catch((err) => {
-      console.error(err);
-      res.json({ error: "Error al guardar" });
-    });
-});
+export const agregarPersona = async (datosPersona) => {
+    try {
+        const persona = new Personas(datosPersona);
+        await persona.save();
+        return { success: true, mensaje: "Agregado correctamente" };
+    } catch (error) {
+        return { success: false, error: "Error al guardar" };
+    }
+};
 
-router.put("/Actualizar", async (req, res) => {
-  const persona = req.body;
-  Personas.updateOne(
-    { Identificacion: persona.Identificacion },
-    { $set: persona },
-    { runValidators: true }
-  )
-    .then((doc) => res.json({ mensaje: "Guardado correctamente" }))
-    .catch((err) => {
-      console.error(err);
-      res.json({ error: "Error al guardar" });
-    });
-});
+export const actualizarPersona = async (datosPersona) => {
+    try {
+        const resultado = await Personas.updateOne(
+            { Identificacion: datosPersona.Identificacion },
+            { $set: datosPersona },
+            { runValidators: true }
+        );
+        
+        if (resultado.matchedCount === 0) {
+            return { success: false, error: "Persona no encontrada" };
+        }
+        
+        return { success: true, mensaje: "Guardado correctamente" };
+    } catch (error) {
+        return { success: false, error: "Error al guardar" };
+    }
+};
 
-router.delete("/Eliminar/:Identificacion", async (req, res) => {
-  const resultado = await Personas.deleteOne({
-    Identificacion: req.params.Identificacion,
-  });
+export const eliminarPersona = async (identificacion) => {
+    try {
+        const resultado = await Personas.deleteOne({ Identificacion: identificacion });
+        
+        if (resultado.deletedCount === 0) {
+            return { success: false, error: "Persona no encontrada" };
+        }
+        
+        return { success: true, mensaje: "Persona eliminada correctamente" };
+    } catch (error) {
+        return { success: false, error: "Error al eliminar la persona" };
+    }
+};
 
-  if (resultado.deletedCount === 0) {
-    return res.status(404).json({ error: "Persona no encontrada" });
-  }
+export const validarSesion = async (credenciales) => {
+    try {
+        const persona = await Personas.findOne({
+            Identificacion: credenciales.Identificacion,
+        });
 
-  res.json({ mensaje: "Persona eliminada correctamente" });
-});
+        if (!persona || persona.Contrasenna !== credenciales.Contrasenna) {
+            return { 
+                success: false, 
+                status: 441, 
+                error: "Credenciales inválidas" 
+            };
+        }
 
-router.post("/ValidarSesion", async (req, res) => {
-  const persona = await Personas.findOne({
-    Identificacion: req.body.Identificacion,
-  });
-
-  if (!persona || persona.Contrasenna !== req.body.Contrasenna) {
-    return res.status(401).json({ mensaje: "Credenciales incorrectas" });
-  }
-
-  return res.status(200).json({
-    mensaje: "Inicio de sesión exitoso",
-    nombre: persona.Nombre,
-    rol: persona.Perfil,
-  });
-});
-
-export default router;
+        return {
+            success: true,
+            status: 200,
+            data: {
+                mensaje: "Inicio de sesión exitoso",
+                nombre: persona.Nombre,
+                rol: persona.Perfil,
+            }
+        };
+    } catch (error) {
+        return { 
+            success: false, 
+            status: 500, 
+            error: "Error en el servidor" 
+        };
+    }
+};
