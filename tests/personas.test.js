@@ -3,60 +3,139 @@
  * @description Prueba unitaria S-01: Autenticación (HU1) - Rechazo de credenciales inválidas
  */
 
-import { jest } from "@jest/globals"; // 👈 necesario en ESM
-import { validarSesion } from "../Servicios/Controllers/Personas.js";
-import Personas from "../Servicios/Schemas/Personas.js";
+import { jest } from "@jest/globals";
 
-// 🔧 Declarar el mock correctamente para ESM
+// ⚠️ Mock ESM del módulo
 jest.unstable_mockModule("../Servicios/Schemas/Personas.js", () => ({
   default: {
     findOne: jest.fn(),
   },
 }));
 
+let validarSesion;
+let Personas;
 
 describe("S-01 Autenticación (HU1) - Rechazo de credenciales inválidas", () => {
+    beforeAll(async () => {
+        // Importar dinámicamente los módulos mockeados
+        ({ validarSesion } = await import("../Servicios/Controllers/Personas.js"));
+        ({ default: Personas } = await import("../Servicios/Schemas/Personas.js"));
+    });
+
     beforeEach(() => {
         jest.clearAllMocks();
     });
 
-    test("Debe retornar código 441 y mensaje controlado si la contraseña es incorrecta", async () => {
-        // Simula usuario existente "admin" en la base de datos
-        Personas.findOne.mockResolvedValue({
-            Identificacion: "admin",
-            Contrasenna: "correcta123",
-            Nombre: "Administrador",
-            Perfil: "Admin",
-        });
+ test("HU1: Retorna 441 si la contraseña es incorrecta y el usuario no está bloqueado", async () => {
+    const usuarioSimulado = {
+        Identificacion: "admin",
+        Contrasenna: "correcta123",
+        Nombre: "Administrador",
+        Perfil: "Admin",
+        IntentosFallidos: 1, // aún no llega al límite
+        BloqueadoHasta: null,
+    };
 
-        // Datos de entrada con contraseña incorrecta
-        const credenciales = {
-            Identificacion: "admin",
-            Contrasenna: "xxx",
-        };
+    // Mock findOne
+    Personas.findOne.mockResolvedValue({ ...usuarioSimulado });
 
-        // Ejecutar la función
-        const resultado = await validarSesion(credenciales);
+    // Mock updateOne para simular incremento del contador
+    Personas.updateOne = jest.fn();
 
-        // Validaciones
+    const credenciales = {
+        Identificacion: "admin",
+        Contrasenna: "incorrecta",
+    };
+
+    const resultado = await validarSesion(credenciales);
+
+    expect(resultado.success).toBe(false);
+    expect(resultado.status).toBe(441); // No está bloqueado aún
+    expect(resultado.error).toMatch(/credenciales inválidas/i);
+});
+
+
+test("HU1: Retorna 441 si el usuario no existe", async () => {
+    Personas.findOne.mockResolvedValue(null); // Usuario no encontrado
+
+    const credenciales = {
+        Identificacion: "admin",
+        Contrasenna: "cualquier",
+    };
+
+    const resultado = await validarSesion(credenciales);
+
+    expect(resultado.success).toBe(false);
+    expect(resultado.status).toBe(441);
+    expect(resultado.error).toMatch(/credenciales inválidas/i);
+});
+
+test("S-02: Bloqueo tras múltiples intentos fallidos consecutivos (usuario 'votante')", async () => {
+    const usuarioBase = {
+        Identificacion: "votante",
+        Contrasenna: "correcta123",
+        Nombre: "Votante Ejemplo",
+        Perfil: "Votante",
+        IntentosFallidos: 0,
+        BloqueadoHasta: null,
+    };
+
+    // Estado simulado del usuario que se va actualizando en memoria
+    let usuarioSimulado = { ...usuarioBase };
+
+    // Mock de findOne dinámico
+    Personas.findOne.mockImplementation(async ({ Identificacion }) => {
+        if (Identificacion === "votante") {
+            return { ...usuarioSimulado }; // Siempre devolver una copia actual del usuario simulado
+        }
+        return null;
+    });
+
+    // Mock de updateOne para modificar el estado simulado
+    Personas.updateOne = jest.fn(async (_filtro, update) => {
+        if (update.$set) {
+            usuarioSimulado = {
+                ...usuarioSimulado,
+                ...update.$set,
+            };
+        }
+    });
+
+    const credencialesIncorrectas = {
+        Identificacion: "votante",
+        Contrasenna: "errada", // intencionalmente incorrecta
+    };
+
+    let resultado;
+
+    // Realizar 3 intentos fallidos
+    for (let i = 1; i <= 3; i++) {
+        resultado = await validarSesion(credencialesIncorrectas);
+
         expect(resultado.success).toBe(false);
         expect(resultado.status).toBe(441);
         expect(resultado.error).toMatch(/credenciales inválidas/i);
-    });
+        expect(usuarioSimulado.IntentosFallidos).toBeLessThanOrEqual(3);
+    }
 
-    test("Debe retornar 441 si el usuario no existe", async () => {
-        // Simula usuario no encontrado
-        Personas.findOne.mockResolvedValue(null);
+    // Simular que el usuario ya está bloqueado (updateOne lo puso)
+    expect(usuarioSimulado.BloqueadoHasta).not.toBeNull();
+    expect(usuarioSimulado.IntentosFallidos).toBe(0); // se reinicia después del bloqueo
 
-        const credenciales = {
-            Identificacion: "admin",
-            Contrasenna: "xxx",
-        };
+    // Esperar que está realmente bloqueado (por comparación de fechas)
+    const ahora = new Date();
+    expect(usuarioSimulado.BloqueadoHasta > ahora).toBe(true);
 
-        const resultado = await validarSesion(credenciales);
+    // 4.º intento mientras está bloqueado
+    resultado = await validarSesion(credencialesIncorrectas);
 
-        expect(resultado.success).toBe(false);
-        expect(resultado.status).toBe(441);
-        expect(resultado.error).toMatch(/credenciales inválidas/i);
-    });
+    expect(resultado.success).toBe(false);
+    expect(resultado.status).toBe(442); // código de usuario bloqueado
+    expect(resultado.error).toMatch(/bloqueado/i);
+
+    // Asegurarse de que no se aumenten los intentos mientras está bloqueado
+    expect(usuarioSimulado.IntentosFallidos).toBe(0);
+});
+
+
 });

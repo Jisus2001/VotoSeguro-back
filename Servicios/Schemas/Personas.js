@@ -22,8 +22,16 @@ const PersonasSchema = mongoose.Schema(
         },
         Perfil : {
            type:String
-        }
+        },
+        IntentosFallidos: {
+            type: Number,
+            default: 0
+        },
+        BloqueadoHasta: {
+            type: Date,
+            default: null
     }
+}
 );
 
 const Personas= mongoose.model('Personas',PersonasSchema);
