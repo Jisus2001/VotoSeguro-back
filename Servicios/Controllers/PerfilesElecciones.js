@@ -1,9 +1,6 @@
-import express from "express";
-const router = express.Router();
 import PerfilesElecciones from '../Schemas/PerfilesElecciones.js';
 
-// Obtener todos los perfiles
-router.get("/Listar", async (req, res) => {
+export const listarPerfiles = async (req, res) => {
     try {
         const perfiles = await PerfilesElecciones.find();
         res.json(perfiles);
@@ -11,10 +8,9 @@ router.get("/Listar", async (req, res) => {
         console.error('Error al obtener perfiles:', error);
         res.status(500).json({ error: "Error al obtener los perfiles" });
     }
-});
+};
 
-// Obtener un perfil por ID
-router.get("/ObtenerPerfil/:id", async (req, res) => {
+export const obtenerPerfil = async (req, res) => {
     try {
         const perfil = await PerfilesElecciones.findOne({ IdPerfil: req.params.id });
         if (perfil) {
@@ -26,10 +22,9 @@ router.get("/ObtenerPerfil/:id", async (req, res) => {
         console.error('Error al obtener perfil:', error);
         res.status(500).json({ error: "Error al obtener el perfil" });
     }
-});
+};
 
-// Crear un nuevo perfil
-router.post("/Agregar", async (req, res) => {
+export const agregarPerfil = async (req, res) => {
     try {
         const perfil = new PerfilesElecciones({
             Descripcion: req.body.Descripcion
@@ -41,10 +36,9 @@ router.post("/Agregar", async (req, res) => {
         console.error('Error al crear perfil:', error);
         res.status(400).json({ error: "Error al guardar el perfil" });
     }
-});
+};
 
-// Actualizar un perfil
-router.put("/Actualizar/:id", async (req, res) => {
+export const actualizarPerfil = async (req, res) => {
     try {
         const perfil = await PerfilesElecciones.findOne({ IdPerfil: req.params.id });
         if (perfil) {
@@ -59,10 +53,9 @@ router.put("/Actualizar/:id", async (req, res) => {
         console.error('Error al actualizar perfil:', error);
         res.status(400).json({ error: "Error al guardar el perfil" });
     }
-});
+};
 
-// Eliminar un perfil
-router.delete("/Eliminar/:id", async (req, res) => {
+export const eliminarPerfil = async (req, res) => {
     try {
         const resultado = await PerfilesElecciones.deleteOne({ IdPerfil: req.params.id });
         if (resultado.deletedCount === 0) {
@@ -73,6 +66,4 @@ router.delete("/Eliminar/:id", async (req, res) => {
         console.error('Error al eliminar perfil:', error);
         res.status(500).json({ error: "Error al eliminar el perfil" });
     }
-});
-
-export default router;
+};

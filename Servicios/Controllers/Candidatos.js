@@ -1,131 +1,108 @@
-import express from "express";
-const router = express.Router();
 import Candidatos from '../Schemas/Candidatos.js';
 import PerfilesElecciones from '../Schemas/PerfilesElecciones.js';
+import sanitizeHtml from "sanitize-html";
 
-// Obtener todos los candidatos
-router.get("/Listar", async (req, res) => {
-    try {
-        const candidatos = await Candidatos.find();
-        
-        // Para cada candidato, buscar su perfil
-        const candidatosCompletos = await Promise.all(candidatos.map(async (candidato) => {
-            const candidatoObj = candidato.toObject();
-            
-            // Obtener perfil
-            const perfil = await PerfilesElecciones.findOne({ IdPerfil: candidato.PerfilId });
-            if (perfil) {
-                candidatoObj.Perfil = {
-                    IdPerfil: perfil.IdPerfil,
-                    Descripcion: perfil.Descripcion
-                };
-                delete candidatoObj.PerfilId;
-            }
-            
-            return candidatoObj;
-        }));
-        
-        res.json(candidatosCompletos);
-    } catch (error) {
-        console.error('Error al obtener candidatos:', error);
-        res.status(500).json({ error: "Error al obtener los candidatos" });
-    }
-});
 
-// Obtener un candidato por nombre
-router.get("/ObtenerCandidato/:nombre", async (req, res) => {
-    try {
-        const candidato = await Candidatos.findOne({ Nombre: req.params.nombre });
-        if (candidato) {
-            const candidatoObj = candidato.toObject();
-            
-            // Obtener perfil
-            const perfil = await PerfilesElecciones.findOne({ IdPerfil: candidato.PerfilId });
-            if (perfil) {
-                candidatoObj.Perfil = {
-                    IdPerfil: perfil.IdPerfil,
-                    Descripcion: perfil.Descripcion
-                };
-                delete candidatoObj.PerfilId;
-            }
-            
-            res.json(candidatoObj);
-        } else {
-            res.status(404).json({ error: 'Candidato no encontrado' });
+// Función para listar todos los candidatos con su perfil
+export async function listarCandidatos() {
+    const candidatos = await Candidatos.find();
+
+    const candidatosCompletos = await Promise.all(candidatos.map(async (candidato) => {
+        const candidatoObj = candidato.toObject();
+
+        const perfil = await PerfilesElecciones.findOne({ IdPerfil: candidato.PerfilId });
+        if (perfil) {
+            candidatoObj.Perfil = {
+                IdPerfil: perfil.IdPerfil,
+                Descripcion: perfil.Descripcion
+            };
+            delete candidatoObj.PerfilId;
         }
-    } catch (error) {
-        console.error('Error al obtener candidato:', error);
-        res.status(500).json({ error: 'Error al obtener el candidato' });
+
+        return candidatoObj;
+    }));
+
+    return candidatosCompletos;
+}
+
+// Obtener candidato por nombre con perfil
+export async function obtenerCandidato(nombre) {
+    const candidato = await Candidatos.findOne({ Nombre: nombre });
+    if (!candidato) return null;
+
+    const candidatoObj = candidato.toObject();
+    const perfil = await PerfilesElecciones.findOne({ IdPerfil: candidato.PerfilId });
+    if (perfil) {
+        candidatoObj.Perfil = {
+            IdPerfil: perfil.IdPerfil,
+            Descripcion: perfil.Descripcion
+        };
+        delete candidatoObj.PerfilId;
     }
-});
+
+    return candidatoObj;
+}
 
 // Crear un nuevo candidato
-router.post("/Agregar", async (req, res) => {
-    try {
-        // Verificar si el perfil existe
-        const perfil = await PerfilesElecciones.findOne({ IdPerfil: req.body.PerfilId });
+export async function agregarCandidato(data) {
+    // Sanitizar el nombre para prevenir inyección de código
+    const nombreSanitizado = sanitizeHtml(data.Nombre, {
+        allowedTags: [],
+        allowedAttributes: {}
+    });
+      if (nombreSanitizado !== data.Nombre) {
+        throw new Error("Nombre contiene código malicioso");
+    }
+    data.Nombre = nombreSanitizado;
+    // Verificar perfil existe
+    const perfil = await PerfilesElecciones.findOne({ IdPerfil: data.PerfilId });
+    if (!perfil) {
+        throw new Error("PerfilNoExiste");
+    }
+
+    // Verificar candidato duplicado
+    const candidatoExistente = await Candidatos.findOne({ Nombre: data.Nombre });
+    if (candidatoExistente) {
+        throw new Error("CandidatoExistente");
+    }
+
+    const candidato = new Candidatos({
+        Nombre: data.Nombre,
+        Partido: data.Partido,
+        PerfilId: data.PerfilId
+    });
+
+    await candidato.save();
+    return "Candidato agregado correctamente";
+}
+
+// Actualizar candidato
+export async function actualizarCandidato(nombre, data) {
+    if (data.PerfilId) {
+        const perfil = await PerfilesElecciones.findOne({ IdPerfil: data.PerfilId });
         if (!perfil) {
-            return res.status(400).json({ error: "El perfil especificado no existe" });
+            throw new Error("PerfilNoExiste");
         }
-
-        // Verificar si ya existe un candidato con el mismo nombre
-        const candidatoExistente = await Candidatos.findOne({ Nombre: req.body.Nombre });
-        if (candidatoExistente) {
-            return res.status(400).json({ error: "Ya existe un candidato con ese nombre" });
-        }
-
-        const candidato = new Candidatos({
-            Nombre: req.body.Nombre,
-            Partido: req.body.Partido,
-            PerfilId: req.body.PerfilId
-        });
-
-        await candidato.save();
-        res.status(201).json({ mensaje: "Candidato agregado correctamente" });
-    } catch (error) {
-        console.error(error);
-        res.status(400).json({ error: "Error al guardar el candidato" });
     }
-});
 
-// Actualizar un candidato
-router.put("/Actualizar/:nombre", async (req, res) => {
-    try {
-        // Si se está actualizando el perfil, verificar que exista
-        if (req.body.PerfilId) {
-            const perfil = await PerfilesElecciones.findOne({ IdPerfil: req.body.PerfilId });
-            if (!perfil) {
-                return res.status(400).json({ error: "El perfil especificado no existe" });
-            }
-        }
-
-        const candidato = await Candidatos.findOne({ Nombre: req.params.nombre });
-        if (candidato) {
-            candidato.Nombre = req.body.Nombre || candidato.Nombre;
-            candidato.Partido = req.body.Partido || candidato.Partido;
-            candidato.PerfilId = req.body.PerfilId || candidato.PerfilId;
-
-            await candidato.save();
-            res.json({ mensaje: "Candidato actualizado correctamente" });
-        } else {
-            res.status(404).json({ error: "Candidato no encontrado" });
-        }
-    } catch (error) {
-        res.status(400).json({ error: "Error al actualizar el candidato" });
+    const candidato = await Candidatos.findOne({ Nombre: nombre });
+    if (!candidato) {
+        throw new Error("CandidatoNoEncontrado");
     }
-});
 
-// Eliminar un candidato
-router.delete("/Eliminar/:nombre", async (req, res) => {
-    try {
-        const resultado = await Candidatos.deleteOne({ Nombre: req.params.nombre });
-        if (resultado.deletedCount === 0) {
-            return res.status(404).json({ error: "Candidato no encontrado" });
-        }
-        res.json({ mensaje: "Candidato eliminado correctamente" });
-    } catch (error) {
-        res.status(500).json({ error: "Error al eliminar el candidato" });
+    candidato.Nombre = data.Nombre || candidato.Nombre;
+    candidato.Partido = data.Partido || candidato.Partido;
+    candidato.PerfilId = data.PerfilId || candidato.PerfilId;
+
+    await candidato.save();
+    return "Candidato actualizado correctamente";
+}
+
+// Eliminar candidato
+export async function eliminarCandidato(nombre) {
+    const resultado = await Candidatos.deleteOne({ Nombre: nombre });
+    if (resultado.deletedCount === 0) {
+        throw new Error("CandidatoNoEncontrado");
     }
-});
-
-export default router;
+    return "Candidato eliminado correctamente";
+}
