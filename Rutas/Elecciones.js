@@ -1,11 +1,11 @@
 import express from "express";
-import * as eleccionesController from "../Controllers/Elecciones.js";
+import * as eleccionesController from "../Servicios/Controllers/Elecciones.js";
 
 const router = express.Router();
 
 // Listar todas
 router.get("/Listar", async (req, res) => {
-    const resultado = await eleccionesController.listarElecciones();
+    const resultado = await eleccionesController.listarElecciones(req.user);
     resultado.success ? res.json(resultado.data) : res.status(500).json({ error: resultado.error });
 });
 

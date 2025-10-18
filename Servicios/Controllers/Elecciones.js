@@ -54,8 +54,9 @@ const construirEleccionCompleta = async (eleccion) => {
 };
 
 // Listar todas las elecciones
-export const listarElecciones = async () => {
+export const listarElecciones = async (user) => {
     try {
+        console.log("Usuario en listarElecciones:", user);
         const elecciones = await Elecciones.find();
         const eleccionesCompletas = await Promise.all(elecciones.map(construirEleccionCompleta));
         return { success: true, data: eleccionesCompletas };

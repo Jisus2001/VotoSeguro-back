@@ -1,6 +1,6 @@
 ###
 @BASE_URL = http://localhost:80
-@AUTH_TOKEN = eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1aWQiOiIxMiIsImlhdCI6MTc1MDc5NzE3MywiZXhwIjoxNzUwODMzMTczfQ.B_8Uo8zcbNrYDMlaEgIHRZk_apxrN4aWlmH1JJeAZhQ
+@AUTH_TOKEN = eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjY4ZGRiMzQ2NzZjNzk2OGE3YTE5YjQzMCIsInJvbCI6InVuZGVmaW5lZCIsImlkZW50aWZpY2FjaW9uIjoiMTU1ODIxODQ1MzM2Iiwibm9tYnJlIjoiSmVzdXMgQWN0dWFsaXphY2nDs24iLCJpYXQiOjE3NjA2NzY3NTQsImV4cCI6MTc2MDY4MDM1NH0.xS9fYVbtv6hltAaSDdR_jtvBxwy3orSTfiOLB21tPdw
 
 # 
 # Rutas de Personas
@@ -9,11 +9,13 @@
 ###
 GET {{ BASE_URL }}/personas/Listar HTTP/1.1
 Content-Type: application/json
+Authorization: Bearer {{ AUTH_TOKEN }}
 
 
 ###
 GET {{ BASE_URL }}/personas/ObtenerPersona/155821845336 HTTP/1.1
 Content-Type: application/json
+Authorization: Bearer {{ AUTH_TOKEN }}
 
 
 ###
@@ -32,14 +34,16 @@ Content-Type: application/json
 ###
 PUT  {{ BASE_URL }}/personas/Actualizar HTTP/1.1
 Content-Type: application/json
+Authorization: Bearer {{ AUTH_TOKEN }}
 
  {
       
-        "Identificacion":12,
-         "Nombre":"jesussssssssssssf",
-          "Contrasenna":"123",
-         "Telefono":"8762",
-         "Correo":"sdfewer" 
+    "Identificacion": "155821845336",
+    "Nombre": "Jesus Actualización",
+    "Contrasenna": "123456789",
+    "Telefono": "87628899",
+    "Correo": "prueb2025a@gmail.com",
+    "Perfil": "Administrador"
     }
 
 
@@ -54,7 +58,7 @@ Content-Type: application/json
 
  {
         "Identificacion":101010101,
-          "Contrasenna":"123"
+          "Contrasenna":"123456789"
     }
 
 # 
@@ -96,18 +100,20 @@ Content-Type: application/json
 ###
 GET {{ BASE_URL }}/elecciones/Listar HTTP/1.1
 Content-Type: application/json
+Authorization: Bearer {{ AUTH_TOKEN }}
 
 ###
 GET {{ BASE_URL }}/elecciones/Vigentes HTTP/1.1
 Content-Type: application/json
 
 ###
-GET {{ BASE_URL }}/elecciones/ObtenerEleccion/68e348611a7a4aee788adeb7 HTTP/1.1
+GET {{ BASE_URL }}/elecciones/ObtenerEleccion/68e6e46c7ee7c43e82142388 HTTP/1.1
 Content-Type: application/json
 
 ###
 POST {{ BASE_URL }}/elecciones/Agregar HTTP/1.1
 Content-Type: application/json
+Authorization: AUTH_TOKEN 
 
 {
     "Nombre": "Elecciones Estudiantiles 2025",

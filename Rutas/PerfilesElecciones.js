@@ -5,7 +5,7 @@ import {
     agregarPerfil,
     actualizarPerfil,
     eliminarPerfil
-} from "../Controllers/PerfilesElecciones.js";
+} from "../Servicios/Controllers/PerfilesElecciones.js";
 
 const router = express.Router();
 

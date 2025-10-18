@@ -7,7 +7,7 @@ import {
     agregarCandidato,
     actualizarCandidato,
     eliminarCandidato,
-} from "../Controllers/Candidatos.js";
+} from "../Servicios/Controllers/Candidatos.js";
 
 // Rutas
 

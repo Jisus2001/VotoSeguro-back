@@ -1,4 +1,7 @@
 import Personas from "../Schemas/Personas.js";
+import jwt from "jsonwebtoken";
+import dotenv from "dotenv";
+dotenv.config();
 
 export const listarPersonas = async () => {
     try {
@@ -63,6 +66,19 @@ export const eliminarPersona = async (identificacion) => {
     }
 };
 
+const generarToken = (usuario) => {
+    const payload = {
+        id: usuario._id,
+        rol: usuario.Perfil,
+        identificacion: usuario.Identificacion,
+        nombre: usuario.Nombre
+    };
+
+    return jwt.sign(payload, process.env.JWT_SECRET, {
+        expiresIn: process.env.JWT_EXPIRES_IN || '1h'
+    });
+};
+
 export const validarSesion = async (credenciales) => {
      try {
         const persona = await Personas.findOne({
@@ -117,17 +133,20 @@ export const validarSesion = async (credenciales) => {
             { Identificacion: credenciales.Identificacion },
             { $set: { IntentosFallidos: 0, BloqueadoHasta: null } }
         );
+        const token = generarToken(persona);
 
         return {
             success: true,
             status: 200,
             data: {
                 mensaje: "Inicio de sesión exitoso",
+              token,
                 nombre: persona.Nombre,
                 rol: persona.Perfil,
             },
         };
     } catch (error) {
+        console.error("Error en validarSesion:", error);
         return {
             success: false,
             status: 500,
