@@ -12,13 +12,14 @@ const authenticate = async (req, res, next) => {
         if (!authHeader || !authHeader.startsWith('Bearer ')) {
             
     
-
+            console.log(req.path);
+            if (req.path !== '/ValidarSesion') {
         const token = authHeader.split(' ')[1];
         const decoded = jwt.verify(token, process.env.JWT_SECRET);
 
         // Puedes evitar hacer otra consulta si el token ya contiene la info
         req.user = decoded;
-
+            }
         // O si prefieres cargar todo el usuario desde la BD:
         // const persona = await Personas.findById(decoded.id);
         // if (!persona) return res.status(401).json({ error: 'Usuario no encontrado' });

@@ -1,8 +1,10 @@
 
 import mongoose from 'mongoose';
+import dotenv from 'dotenv';
+dotenv.config();
 
 // Reemplaza con tu cadena de conexión real
-const MONGODB_URI = 'mongodb+srv://jisus:123@cluster0.c0xwy.mongodb.net/VotoSeguro';
+const MONGODB_URI = 'mongodb+srv://'+process.env.MONGODB_User+':'+process.env.MONGODB_Password+'@cluster0.c0xwy.mongodb.net/'+process.env.MONGODB_DB;
 
 async function connectDB() {
   try {
