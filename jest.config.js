@@ -1,4 +1,8 @@
 export default {
+   transform: {
+    "^.+\\.js$": "babel-jest",
+  },
   testEnvironment: "node",
-  transform: {}, // no usar Babel
+  verbose: true,
+  testMatch: ["**/tests/**/*.test.js"]
 };

@@ -135,6 +135,14 @@ Content-Type: application/json
     "FechaFin": "2025-10-12T18:00:00.000Z"
 }
 
+### Activate an election
+PUT {{ BASE_URL }}/elecciones/Activar/68e6e46c7ee7c43e82142388 HTTP/1.1
+Content-Type: application/json
+
+### Deactivate an election
+PUT {{ BASE_URL }}/elecciones/Desactivar/68e6e46c7ee7c43e82142388 HTTP/1.1
+Content-Type: application/json
+
 ###
 DELETE {{ BASE_URL }}/elecciones/Eliminar/68e496f112a0316498d3e2ad HTTP/1.1
 Content-Type: application/json

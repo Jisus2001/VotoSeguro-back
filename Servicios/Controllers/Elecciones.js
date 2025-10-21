@@ -132,6 +132,31 @@ export const actualizarEleccion = async (id, datos) => {
     }
 };
 
+AbrirEleccion = async (id) => {
+    try {
+        const eleccion = await Elecciones.findById(id);
+        if (!eleccion) return { success: false, error: "Elección no encontrada" };
+        return { success: true, data: eleccion };
+        eleccion.Activa = true;
+        await eleccion.save();
+        return { success: true, mensaje: "Elección abierta correctamente" };    
+    } catch (error) {
+        return { success: false, error: "Error al abrir la elección" };
+    }
+};
+
+CerrarEleccion = async (id) => {
+    try {
+        const eleccion = await Elecciones.findById(id);
+        if (!eleccion) return { success: false, error: "Elección no encontrada" };
+        eleccion.Activa = false;
+        await eleccion.save();
+        return { success: true, mensaje: "Elección cerrada correctamente" };
+    } catch (error) {
+        return { success: false, error: "Error al cerrar la elección" };
+    }
+};      
+
 // Eliminar una elección
 export const eliminarEleccion = async (id) => {
     try {

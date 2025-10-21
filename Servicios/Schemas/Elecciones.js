@@ -20,6 +20,11 @@ const EleccionesSchema = mongoose.Schema(
             type: Date,
             required: true
         },
+        Activa: {
+            type: Boolean,
+            required: true,
+            default: false
+        },
         PerfilId: {
             type: Number,
             required: true,

@@ -33,6 +33,17 @@ router.put("/Actualizar/:id", async (req, res) => {
     resultado.success ? res.json({ mensaje: resultado.mensaje }) : res.status(400).json({ error: resultado.error });
 });
 
+router.put("/Abrir/:id", async (req, res) => {
+    const resultado = await eleccionesController.AbrirEleccion(req.params.id);
+    resultado.success ? res.json({ mensaje: resultado.mensaje }) : res.status(404).json({ error: resultado.error });
+}); 
+
+// Cerrar
+router.put("/Cerrar/:id", async (req, res) => {
+    const resultado = await eleccionesController.CerrarEleccion(req.params.id);
+    resultado.success ? res.json({ mensaje: resultado.mensaje }) : res.status(404).json({ error: resultado.error });
+});
+
 // Eliminar
 router.delete("/Eliminar/:id", async (req, res) => {
     const resultado = await eleccionesController.eliminarEleccion(req.params.id);

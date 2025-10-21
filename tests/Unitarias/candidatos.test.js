@@ -30,9 +30,9 @@ let Candidatos;
 let PerfilesElecciones;
 
 beforeAll(async () => {
-  ({ agregarCandidato } = await import('../Servicios/Controllers/Candidatos.js'));
-  ({ default: Candidatos } = await import('../Servicios/Schemas/Candidatos.js'));
-  ({ default: PerfilesElecciones } = await import('../Servicios/Schemas/PerfilesElecciones.js'));
+  ({ agregarCandidato } = await import('../../Servicios/Controllers/Candidatos.js'));
+  ({ default: Candidatos } = await import('../../Servicios/Schemas/Candidatos.js'));
+  ({ default: PerfilesElecciones } = await import('../../Servicios/Schemas/PerfilesElecciones.js'));
 });
 
 beforeEach(() => {
