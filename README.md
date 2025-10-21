@@ -143,3 +143,32 @@ A continuación, se presenta la lista inicial de pruebas requeridas para verific
 | **Negativa** | Verificar que cuando se omite el nombre o la agrupación, entonces el sistema impide el registro del candidato. |
 | **Acceso** | Verificar que solo el **rol Administrador** puede acceder a la funcionalidad de registro de candidatos. |
 
+### C. HU 5 - Visualizar Lista de Candidatos
+
+| Tipo | Caso de Validación |
+| :--- | :--- |
+| **Positiva** | Verificar que cuando el votante accede a la elección activa, entonces el sistema muestra la lista de candidatos disponibles. |
+| **Negativa** | Verificar que cuando no hay candidatos registrados en la elección activa, entonces el sistema muestra un mensaje indicando que no hay opciones disponibles. |
+| **Visual** | Verificar que la lista muestra correctamente el **nombre** y la **agrupación** de cada candidato. |
+| **Interfaz** | Verificar que la interfaz sea clara, legible e intuitiva para facilitar la selección del candidato. |
+| **Restricción** | Verificar que solo se muestren los candidatos de la elección activa y no de elecciones anteriores o futuras. |
+
+### D. HU 6 - Emisión de Voto
+
+| Tipo | Caso de Validación |
+| :--- | :--- |
+| **Positiva** | Verificar que cuando el votante selecciona un candidato y confirma su elección, entonces el sistema registra el voto exitosamente. |
+| **Confirmación** | Verificar que el sistema muestra una **confirmación visual** del voto emitido. |
+| **Restricción** | Verificar que una vez emitido el voto, el sistema **impide modificarlo**. |
+| **Persistencia** | Verificar que el voto se almacena correctamente en la base de datos y el votante queda marcado como "ya votó". |
+| **Acceso** | Verificar que solo los votantes habilitados puedan emitir su voto en la elección activa. |
+
+### E. HU 7 - Restricción de Voto Único
+
+| Tipo | Caso de Validación |
+| :--- | :--- |
+| **Restricción** | Verificar que cuando un votante intenta emitir un segundo voto en la misma elección, entonces el sistema lo impide y muestra un mensaje claro. |
+| **Persistencia** | Verificar que el sistema consulta correctamente el estado del votante antes de permitir la emisión del voto. |
+| **Negativa** | Verificar que si el votante ya ha votado, el botón o acción de votación esté deshabilitado o no disponible. |
+| **Seguridad** | Verificar que no se pueda forzar la emisión de un segundo voto mediante manipulación del frontend o llamadas directas a la API. |
+
