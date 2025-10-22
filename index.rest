@@ -118,7 +118,7 @@ Authorization: AUTH_TOKEN
 {
     "Nombre": "Elecciones Estudiantiles 2025",
     "SedeId": 1,
-    "PerfilId": 1,
+    "PerfilId": 81,
     "FechaInicio": "2025-10-05T08:00:00.000Z",
     "FechaFin": "2025-10-15T18:00:00.000Z"
 }
@@ -136,11 +136,11 @@ Content-Type: application/json
 }
 
 ### Activate an election
-PUT {{ BASE_URL }}/elecciones/Activar/68e6e46c7ee7c43e82142388 HTTP/1.1
+PUT {{ BASE_URL }}/elecciones/Abrir/68e6e46c7ee7c43e82142388 HTTP/1.1
 Content-Type: application/json
 
 ### Deactivate an election
-PUT {{ BASE_URL }}/elecciones/Desactivar/68e6e46c7ee7c43e82142388 HTTP/1.1
+PUT {{ BASE_URL }}/elecciones/Cerrar/68e6e46c7ee7c43e82142388 HTTP/1.1
 Content-Type: application/json
 
 ###
@@ -200,7 +200,7 @@ GET {{ BASE_URL }}/perfiles/Listar HTTP/1.1
 Content-Type: application/json
 
 ###
-GET {{ BASE_URL }}/perfiles/ObtenerPerfil/1 HTTP/1.1
+GET {{ BASE_URL }}/perfiles/ObtenerPerfil/81 HTTP/1.1
 Content-Type: application/json
 
 ###

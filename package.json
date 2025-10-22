@@ -9,7 +9,7 @@
     "dev": " nodemon server.js",
     "test": "jest",
     "test:unit": "jest tests/Unitarias --runInBand",
-    "test:integration": "jest tests/Integracion --runInBand"
+    "test:integration": "jest tests/Integracion --verbose --runInBand"
   },
   "keywords": [],
   "author": "",
