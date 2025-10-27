@@ -2,7 +2,7 @@ import { jest } from "@jest/globals";
 
 
 // mock del módulo completo
-jest.unstable_mockModule('../Servicios/Schemas/Candidatos.js', () => {
+jest.unstable_mockModule('../../Servicios/Schemas/Candidatos.js', () => {
   // Mock de la clase constructor
   const saveMock = jest.fn();
   const constructorMock = jest.fn(() => ({
@@ -20,7 +20,7 @@ jest.unstable_mockModule('../Servicios/Schemas/Candidatos.js', () => {
 
 
 
-jest.unstable_mockModule("../Servicios/Schemas/PerfilesElecciones.js", () => ({
+jest.unstable_mockModule("../../Servicios/Schemas/PerfilesElecciones.js", () => ({
   default: {
     findOne: jest.fn(),
   }
@@ -66,5 +66,3 @@ test('Debería agregar candidato correctamente', async () => {
   expect(Candidatos.findOne).toHaveBeenCalledWith({ Nombre: 'Candidato Prueba' });
   expect(saveMock).toHaveBeenCalled();
 });
-
-

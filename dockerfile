@@ -1,20 +1,17 @@
-# Imagen base oficial de Node
-FROM node:18
+# Utiliza una imagen Node oficial
+FROM node:20-alpine
 
-# Crear directorio de trabajo en el contenedor
 WORKDIR /app
 
-# Copiar los archivos de configuración primero
+# Copiar dependencias
 COPY package*.json ./
-
-# Instalar dependencias
 RUN npm install
 
-# Copiar el resto del proyecto
+# Copiar todo el código
 COPY . .
 
-# Exponer el puerto (debe coincidir con el de Express)
-EXPOSE 80
+# Opcional: crea carpeta de reportes para evitar errores de escritura
+RUN mkdir -p reports/unit reports/integration
 
-# Comando para ejecutar la aplicación
-CMD ["npm", "start"]
+# Comando por defecto (sobrescrito por docker-compose)
+CMD ["npm", "test"]

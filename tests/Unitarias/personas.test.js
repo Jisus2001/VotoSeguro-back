@@ -6,7 +6,7 @@
 import { jest } from "@jest/globals";
 
 // ⚠️ Mock ESM del módulo
-jest.unstable_mockModule("../Servicios/Schemas/Personas.js", () => ({
+jest.unstable_mockModule("../../Servicios/Schemas/Personas.js", () => ({
   default: {
     findOne: jest.fn(),
   },
@@ -18,8 +18,8 @@ let Personas;
 describe("S-01 Autenticación (HU1) - Rechazo de credenciales inválidas", () => {
     beforeAll(async () => {
         // Importar dinámicamente los módulos mockeados
-        ({ validarSesion } = await import("../Servicios/Controllers/Personas.js"));
-        ({ default: Personas } = await import("../Servicios/Schemas/Personas.js"));
+        ({ validarSesion } = await import("../../Servicios/Controllers/Personas.js"));
+        ({ default: Personas } = await import("../../Servicios/Schemas/Personas.js"));
     });
 
     beforeEach(() => {

@@ -3,6 +3,9 @@ import mongoose from "mongoose";
 import request from "supertest";
 import app from "../../app.js";
 
+// 🔑 Esta línea hace que Testcontainers use Docker Desktop en Windows
+process.env.TESTCONTAINERS_HOST_OVERRIDE = "host.docker.internal";
+
 // Importa tus modelos reales
 import Personas from "../../Servicios/Schemas/Personas.js";
 import Perfiles from "../../Servicios/Schemas/PerfilesElecciones.js";

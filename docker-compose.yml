@@ -1,11 +1,31 @@
-
 services:
-  backend:
+  unit-tests:
     build: .
-    ports:
-      - "3000:80"
+    container_name: unit-tests
+    command: >
+      sh -c "node --experimental-vm-modules node_modules/jest/bin/jest.js
+      tests/Unitarias --runInBand --verbose --reporters=default
+      --reporters=jest-junit"
     volumes:
       - .:/app
-      - /app/node_modules
-    env_file:
-      - Pruebas.env
+      - ./reports:/app/reports
+    environment:
+      - JEST_JUNIT_OUTPUT_DIR=./reports/unit
+      - JEST_JUNIT_OUTPUT_NAME=unit-report.xml
+
+  integration-tests:
+    build: .
+    container_name: integration-tests
+    depends_on:
+      - unit-tests
+    command: >
+      sh -c " npx jest tests/Integracion --verbose --runInBand --reporters=default
+      --reporters=jest-junit"
+    volumes:
+      - .:/app
+      - ./reports:/app/reports
+    environment:
+      - JEST_JUNIT_OUTPUT_DIR=./reports/integration
+      - JEST_JUNIT_OUTPUT_NAME=integration-report.xml
+      - TESTCONTAINERS_HOST_OVERRIDE=host.docker.internal
+

@@ -4,6 +4,9 @@ import request from "supertest";
 import app from "../../app.js";
 import Personas from "../../Servicios/Schemas/Personas.js";
 
+// 🔑 Esta línea hace que Testcontainers use Docker Desktop en Windows
+process.env.TESTCONTAINERS_HOST_OVERRIDE = "host.docker.internal";
+
 describe("Pruebas de integración - Personas / ValidarSesion", () => {
   let container;
   let server;
