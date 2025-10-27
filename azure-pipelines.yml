@@ -1,0 +1,67 @@
+trigger:
+  branches:
+    include:
+      - main
+
+pool:
+  vmImage: 'ubuntu-latest'
+
+variables:
+  # Habilita BuildKit
+  DOCKER_BUILDKIT: 1
+
+steps:
+  # 1️⃣ Checkout del código
+  - task: Checkout@1
+
+  # 2️⃣ Instalar Node.js
+  - task: NodeTool@0
+    inputs:
+      versionSpec: '18.x'
+    displayName: 'Install Node.js'
+
+  # 3️⃣ Instalar dependencias
+  - script: |
+      npm ci
+    displayName: 'Install npm dependencies'
+
+  # 4️⃣ Build de las imágenes de Docker
+  - script: |
+      docker-compose build
+    displayName: 'Build Docker images'
+
+  # 5️⃣ Levantar contenedores de tests (detached)
+  - script: |
+      docker-compose up -d
+    displayName: 'Start test containers'
+
+  # 6️⃣ Ejecutar Unit Tests
+  - script: |
+      docker exec unit-tests sh -c "npm run test:unit"
+    displayName: 'Run Unit Tests'
+
+  # 7️⃣ Ejecutar Integration Tests
+  - script: |
+      docker exec integration-tests sh -c "npx jest tests/Integracion --verbose --runInBand --reporters=default --reporters=jest-junit"
+    displayName: 'Run Integration Tests'
+
+  # 8️⃣ Publicar resultados de Unit Tests
+  - task: PublishTestResults@2
+    inputs:
+      testResultsFiles: '**/reports/unit/*.xml'
+      testRunTitle: 'Unit Tests'
+      mergeTestResults: true
+      failTaskOnFailedTests: true
+
+  # 9️⃣ Publicar resultados de Integration Tests
+  - task: PublishTestResults@2
+    inputs:
+      testResultsFiles: '**/reports/integration/*.xml'
+      testRunTitle: 'Integration Tests'
+      mergeTestResults: true
+      failTaskOnFailedTests: true
+
+  #  🔹 Opcional: detener y limpiar contenedores al final
+  - script: |
+      docker-compose down -v
+    displayName: 'Clean up test containers'

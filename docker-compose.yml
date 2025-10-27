@@ -16,16 +16,27 @@ services:
   integration-tests:
     build: .
     container_name: integration-tests
+    # 👇 Ejecutar como root evita el error de permisos al acceder al socket de Docker
+    user: root
     depends_on:
       - unit-tests
     command: >
-      sh -c " npx jest tests/Integracion --verbose --runInBand --reporters=default
+      sh -c "npx jest tests/Integracion --verbose --runInBand --reporters=default
       --reporters=jest-junit"
     volumes:
+      # Código y reportes
       - .:/app
       - ./reports:/app/reports
+
+      # 👇 Monta el socket del Docker host (clave para Testcontainers)
+      - /var/run/docker.sock:/var/run/docker.sock
     environment:
       - JEST_JUNIT_OUTPUT_DIR=./reports/integration
       - JEST_JUNIT_OUTPUT_NAME=integration-report.xml
-      - TESTCONTAINERS_HOST_OVERRIDE=host.docker.internal
 
+      # 👇 Hace explícito el host de Docker
+      - DOCKER_HOST=unix:///var/run/docker.sock
+
+      # 👇 Opcional: permite a Testcontainers omitir comprobaciones de TLS
+      - TESTCONTAINERS_DOCKER_SOCKET_OVERRIDE=/var/run/docker.sock
+      - TESTCONTAINERS_RYUK_DISABLED=true

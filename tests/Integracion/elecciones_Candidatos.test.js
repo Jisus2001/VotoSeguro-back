@@ -3,8 +3,8 @@ import mongoose from "mongoose";
 import request from "supertest";
 import app from "../../app.js";
 
-// 🔑 Esta línea hace que Testcontainers use Docker Desktop en Windows
-process.env.TESTCONTAINERS_HOST_OVERRIDE = "host.docker.internal";
+// // 🔑 Esta línea hace que Testcontainers use Docker Desktop en Windows
+// process.env.TESTCONTAINERS_HOST_OVERRIDE = "host.docker.internal";
 
 // Importa tus modelos reales
 import Personas from "../../Servicios/Schemas/Personas.js";
@@ -19,7 +19,9 @@ describe("Pruebas de integración - Elecciones y Candidatos", () => {
   let eleccionCerrada;
 
   beforeAll(async () => {
-    jest.setTimeout(60000); // 60 segundos
+    // jest.setTimeout(60000); // 60 segundos
+    jest.setTimeout(30000); // 30 segundos
+
 
     // 🔹 Inicia contenedor MongoDB
     container = await new GenericContainer("mongo:7")
