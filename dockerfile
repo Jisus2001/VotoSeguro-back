@@ -5,6 +5,7 @@ WORKDIR /app
 
 # Copiar dependencias
 COPY package*.json ./
+ENV UNRS_RESOLVER_FORCE_FALLBACK=true
 RUN npm install
 
 # Copiar todo el código
