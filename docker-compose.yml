@@ -42,7 +42,3 @@ services:
       # 👇 Opcional: permite a Testcontainers omitir comprobaciones de TLS
       - TESTCONTAINERS_DOCKER_SOCKET_OVERRIDE=/var/run/docker.sock
       - TESTCONTAINERS_RYUK_DISABLED=true
-      - script: |
-         docker-compose down -v
-        displayName: 'Clean up test containers'
-
