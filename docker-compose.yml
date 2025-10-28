@@ -1,6 +1,7 @@
 services:
   unit-tests:
     build: .
+    mem_limit: 1g 
     container_name: unit-tests
     command: >
       sh -c "node --experimental-vm-modules node_modules/jest/bin/jest.js
@@ -15,6 +16,7 @@ services:
 
   integration-tests:
     build: .
+    mem_limit: 2g
     container_name: integration-tests
     # 👇 Ejecutar como root evita el error de permisos al acceder al socket de Docker
     user: root
