@@ -12,7 +12,7 @@ variables:
 
 steps:
   # 1️⃣ Checkout del código
-  - task: Checkout@1
+  - checkout: self
 
   # 2️⃣ Instalar Node.js
   - task: NodeTool@0
