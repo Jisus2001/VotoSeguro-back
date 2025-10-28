@@ -8,7 +8,7 @@ ENV UNRS_RESOLVER_FORCE_FALLBACK=true
 # Copiar dependencias
 COPY package*.json ./
 
-RUN npm install
+RUN npm ci
 
 # Copiar todo el código
 COPY . .
