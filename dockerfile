@@ -3,9 +3,11 @@ FROM node:20-alpine
 
 WORKDIR /app
 
+ENV UNRS_RESOLVER_FORCE_FALLBACK=true
+
 # Copiar dependencias
 COPY package*.json ./
-ENV UNRS_RESOLVER_FORCE_FALLBACK=true
+
 RUN npm install
 
 # Copiar todo el código
@@ -16,3 +18,5 @@ RUN mkdir -p reports/unit reports/integration
 
 # Comando por defecto (sobrescrito por docker-compose)
 CMD ["npm", "test"]
+
+
