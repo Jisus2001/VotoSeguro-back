@@ -7,8 +7,8 @@ pool:
   name: 'VotoSeguroPool'
 
 variables:
-  # Habilita BuildKit
   DOCKER_BUILDKIT: 1
+  COMPOSE_CONVERT_WINDOWS_PATHS: 1
 
 steps:
   # 1️⃣ Checkout del código
@@ -20,52 +20,48 @@ steps:
       versionSpec: '18.x'
     displayName: 'Install Node.js'
 
-  # 3️⃣ Instalar dependencias
-  - script: |
-      npm ci
+  # 3️⃣ Instalar dependencias NPM
+  - script: npm ci
     displayName: 'Install npm dependencies'
 
-  # 4️⃣ Build de las imágenes de Docker
+  # 4️⃣ Build de imágenes Docker
   - script: |
+      echo Building Docker images...
       docker-compose build
     displayName: 'Build Docker images'
 
-  # 5️⃣ Levantar contenedores de tests (detached)
+  # 5️⃣ Levantar contenedores de test (modo detach)
   - script: |
+      echo Starting test containers...
       docker-compose up -d
     displayName: 'Start test containers'
 
-  # 6️⃣ Ejecutar Unit Tests
+  # 6️⃣ Ejecutar pruebas unitarias dentro del contenedor
   - script: |
-      docker exec unit-tests sh -c "npm run test:unit || true"
+      echo Running Unit Tests...
+      docker exec unit-tests npm run test:unit || exit 0
     displayName: 'Run Unit Tests'
 
-  # 7️⃣ Ejecutar Integration Tests
+  # 7️⃣ Ejecutar pruebas de integración en host
   - script: |
+      echo Running Integration Tests...
       npx jest tests/Integracion --verbose --runInBand --reporters=default --reporters=jest-junit
-    displayName: 'Run Integration Tests (host)'
     env:
       DOCKER_HOST: tcp://localhost:2375
       TESTCONTAINERS_RYUK_DISABLED: true
       TESTCONTAINERS_CHECKS_DISABLE: true
+    displayName: 'Run Integration Tests (host)'
 
-  # 8️⃣ Publicar resultados de Unit Tests
+  # 8️⃣ Publicar resultados de pruebas
   - task: PublishTestResults@2
     inputs:
-      testResultsFiles: '**/reports/unit/*.xml'
-      testRunTitle: 'Unit Tests'
+      testResultsFiles: '**/reports/**/*.xml'
       mergeTestResults: true
       failTaskOnFailedTests: true
+      testRunTitle: 'VotoSeguro CI Tests'
 
-  # 9️⃣ Publicar resultados de Integration Tests
-  - task: PublishTestResults@2
-    inputs:
-      testResultsFiles: '**/reports/integration/*.xml'
-      testRunTitle: 'Integration Tests'
-      mergeTestResults: true
-      failTaskOnFailedTests: true
-
-  #  🔹 Opcional: detener y limpiar contenedores al final
+  # 9️⃣ Limpiar contenedores al final
   - script: |
+      echo Cleaning up containers...
       docker-compose down -v
     displayName: 'Clean up test containers'
