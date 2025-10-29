@@ -4,7 +4,7 @@ trigger:
       - main
 
 pool:
-  name: 'Default'
+  name: 'VotoSeguroPool'
 
 variables:
   DOCKER_BUILDKIT: 1
