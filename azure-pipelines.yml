@@ -7,7 +7,6 @@ pool:
   name: 'Default'
 
 variables:
-  # Habilita BuildKit
   DOCKER_BUILDKIT: 1
 
 steps:
@@ -35,21 +34,23 @@ steps:
       docker-compose up -d
     displayName: 'Start test containers'
 
-  # 6️⃣ Ejecutar Unit Tests
+  # 6️⃣ Ejecutar Unit Tests dentro del contenedor
   - script: |
       docker exec unit-tests sh -c "npm run test:unit || true"
     displayName: 'Run Unit Tests'
 
-  # 7️⃣ Ejecutar Integration Tests
+  # 7️⃣ Ejecutar Integration Tests dentro del contenedor
   - script: |
-      npx jest tests/Integracion --verbose --runInBand --reporters=default --reporters=jest-junit
-    displayName: 'Run Integration Tests (host)'
+      docker exec integration-tests sh -c "npm run test:integration || true"
+    displayName: 'Run Integration Tests'
     env:
-      DOCKER_HOST: tcp://localhost:2375
+      # Variables para Testcontainers dentro del contenedor
+      DOCKER_HOST: tcp://host.docker.internal:2375
+      TESTCONTAINERS_HOST_OVERRIDE: host.docker.internal
       TESTCONTAINERS_RYUK_DISABLED: true
       TESTCONTAINERS_CHECKS_DISABLE: true
 
-  # 8️⃣ Publicar resultados de Unit Tests
+  # 8️⃣ Publicar resultados Unit Tests
   - task: PublishTestResults@2
     inputs:
       testResultsFiles: '**/reports/unit/*.xml'
@@ -57,7 +58,7 @@ steps:
       mergeTestResults: true
       failTaskOnFailedTests: true
 
-  # 9️⃣ Publicar resultados de Integration Tests
+  # 9️⃣ Publicar resultados Integration Tests
   - task: PublishTestResults@2
     inputs:
       testResultsFiles: '**/reports/integration/*.xml'
@@ -65,7 +66,7 @@ steps:
       mergeTestResults: true
       failTaskOnFailedTests: true
 
-  #  🔹 Opcional: detener y limpiar contenedores al final
+  # 🔹 Limpiar contenedores al final
   - script: |
       docker-compose down -v
     displayName: 'Clean up test containers'

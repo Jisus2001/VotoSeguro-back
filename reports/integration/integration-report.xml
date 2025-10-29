@@ -1,23 +1,23 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<testsuites name="jest tests" tests="8" failures="0" errors="0" time="5.032">
-  <testsuite name="Pruebas de integración - Elecciones y Candidatos" errors="0" failures="0" skipped="0" timestamp="2025-10-28T16:40:07" time="3.244" tests="7">
-    <testcase classname="Pruebas de integración - Elecciones y Candidatos Debe permitir agregar un candidato con perfil válido" name="Pruebas de integración - Elecciones y Candidatos Debe permitir agregar un candidato con perfil válido" time="0.026">
+<testsuites name="jest tests" tests="8" failures="0" errors="0" time="13.376">
+  <testsuite name="Pruebas de integración - Elecciones y Candidatos" errors="0" failures="0" skipped="0" timestamp="2025-10-29T02:13:15" time="8.228" tests="7">
+    <testcase classname="Pruebas de integración - Elecciones y Candidatos Debe permitir agregar un candidato con perfil válido" name="Pruebas de integración - Elecciones y Candidatos Debe permitir agregar un candidato con perfil válido" time="0.054">
     </testcase>
-    <testcase classname="Pruebas de integración - Elecciones y Candidatos Debe rechazar un candidato si el perfil no existe" name="Pruebas de integración - Elecciones y Candidatos Debe rechazar un candidato si el perfil no existe" time="0.004">
+    <testcase classname="Pruebas de integración - Elecciones y Candidatos Debe rechazar un candidato si el perfil no existe" name="Pruebas de integración - Elecciones y Candidatos Debe rechazar un candidato si el perfil no existe" time="0.01">
     </testcase>
-    <testcase classname="Pruebas de integración - Elecciones y Candidatos Debe rechazar un candidato repetido" name="Pruebas de integración - Elecciones y Candidatos Debe rechazar un candidato repetido" time="0.008">
+    <testcase classname="Pruebas de integración - Elecciones y Candidatos Debe rechazar un candidato repetido" name="Pruebas de integración - Elecciones y Candidatos Debe rechazar un candidato repetido" time="0.019">
     </testcase>
-    <testcase classname="Pruebas de integración - Elecciones y Candidatos Debe agregar una elección correctamente" name="Pruebas de integración - Elecciones y Candidatos Debe agregar una elección correctamente" time="0.012">
+    <testcase classname="Pruebas de integración - Elecciones y Candidatos Debe agregar una elección correctamente" name="Pruebas de integración - Elecciones y Candidatos Debe agregar una elección correctamente" time="0.022">
     </testcase>
-    <testcase classname="Pruebas de integración - Elecciones y Candidatos Debe abrir una elección correctamente" name="Pruebas de integración - Elecciones y Candidatos Debe abrir una elección correctamente" time="0.014">
+    <testcase classname="Pruebas de integración - Elecciones y Candidatos Debe abrir una elección correctamente" name="Pruebas de integración - Elecciones y Candidatos Debe abrir una elección correctamente" time="0.027">
     </testcase>
-    <testcase classname="Pruebas de integración - Elecciones y Candidatos Debe aplicar votos correctamente" name="Pruebas de integración - Elecciones y Candidatos Debe aplicar votos correctamente" time="0.012">
+    <testcase classname="Pruebas de integración - Elecciones y Candidatos Debe aplicar votos correctamente" name="Pruebas de integración - Elecciones y Candidatos Debe aplicar votos correctamente" time="0.022">
     </testcase>
-    <testcase classname="Pruebas de integración - Elecciones y Candidatos Debe abrir una elección correctamente" name="Pruebas de integración - Elecciones y Candidatos Debe abrir una elección correctamente" time="0.011">
+    <testcase classname="Pruebas de integración - Elecciones y Candidatos Debe abrir una elección correctamente" name="Pruebas de integración - Elecciones y Candidatos Debe abrir una elección correctamente" time="0.023">
     </testcase>
   </testsuite>
-  <testsuite name="Pruebas de integración - Personas / ValidarSesion" errors="0" failures="0" skipped="0" timestamp="2025-10-28T16:40:10" time="1.721" tests="1">
-    <testcase classname="Pruebas de integración - Personas / ValidarSesion Login correcto devuelve token" name="Pruebas de integración - Personas / ValidarSesion Login correcto devuelve token" time="0.039">
+  <testsuite name="Pruebas de integración - Personas / ValidarSesion" errors="0" failures="0" skipped="0" timestamp="2025-10-29T02:13:24" time="4.929" tests="1">
+    <testcase classname="Pruebas de integración - Personas / ValidarSesion Login correcto devuelve token" name="Pruebas de integración - Personas / ValidarSesion Login correcto devuelve token" time="0.326">
     </testcase>
   </testsuite>
 </testsuites>
