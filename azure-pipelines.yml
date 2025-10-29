@@ -34,22 +34,16 @@ steps:
       docker-compose up -d
     displayName: 'Start test containers'
 
-  # 6️⃣ Ejecutar Unit Tests con límite de memoria
+  # 6️⃣ Ejecutar Unit Tests con límite de memoria Node
   - script: |
-      docker exec \
-        --memory=1g \
-        unit-tests sh -c "node --max-old-space-size=1024 node_modules/jest/bin/jest.js tests/Unitarias --runInBand --verbose --reporters=default --reporters=jest-junit"
-    displayName: 'Run Unit Tests (with memory limit)'
+      docker exec unit-tests sh -c "node --max-old-space-size=1024 node_modules/jest/bin/jest.js tests/Unitarias --runInBand --verbose --reporters=default --reporters=jest-junit"
+    displayName: 'Run Unit Tests (Node memory limit)'
 
-
-  # 7️⃣ Ejecutar Integration Tests con límite de memoria
+  # 7️⃣ Ejecutar Integration Tests con límite de memoria Node
   - script: |
-      docker exec \
-        --memory=2g \
-        integration-tests sh -c "node --max-old-space-size=2048 node_modules/jest/bin/jest.js tests/Integracion --runInBand --verbose --reporters=default --reporters=jest-junit"
-    displayName: 'Run Integration Tests (with memory limit)'
+      docker exec integration-tests sh -c "node --max-old-space-size=2048 node_modules/jest/bin/jest.js tests/Integracion --runInBand --verbose --reporters=default --reporters=jest-junit"
+    displayName: 'Run Integration Tests (Node memory limit)'
     env:
-      # Variables para Testcontainers dentro del contenedor
       DOCKER_HOST: tcp://host.docker.internal:2375
       TESTCONTAINERS_HOST_OVERRIDE: host.docker.internal
       TESTCONTAINERS_RYUK_DISABLED: true
