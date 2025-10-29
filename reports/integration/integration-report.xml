@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<testsuites name="jest tests" tests="8" failures="8" errors="0" time="12.187">
-  <testsuite name="Pruebas de integración - Elecciones y Candidatos" errors="0" failures="7" skipped="0" timestamp="2025-10-29T19:39:28" time="9.033" tests="7">
-    <testcase classname="Pruebas de integración - Elecciones y Candidatos Debe permitir agregar un candidato con perfil válido" name="Pruebas de integración - Elecciones y Candidatos Debe permitir agregar un candidato con perfil válido" time="0.004">
+<testsuites name="jest tests" tests="8" failures="8" errors="0" time="13.396">
+  <testsuite name="Pruebas de integración - Elecciones y Candidatos" errors="0" failures="7" skipped="0" timestamp="2025-10-29T19:45:42" time="10.152" tests="7">
+    <testcase classname="Pruebas de integración - Elecciones y Candidatos Debe permitir agregar un candidato con perfil válido" name="Pruebas de integración - Elecciones y Candidatos Debe permitir agregar un candidato con perfil válido" time="0.005">
       <failure>Error: Could not find a working container runtime strategy
     at getContainerRuntimeClient (/app/node_modules/testcontainers/src/container-runtime/clients/client.ts:63:9)
     at processTicksAndRejections (node:internal/process/task_queues:95:5)
@@ -15,7 +15,7 @@
     at GenericContainer.start (/app/node_modules/testcontainers/src/generic-container/generic-container.ts:87:20)
     at Object.&lt;anonymous&gt; (/app/tests/Integracion/elecciones_Candidatos.test.js:27:17)</failure>
     </testcase>
-    <testcase classname="Pruebas de integración - Elecciones y Candidatos Debe rechazar un candidato repetido" name="Pruebas de integración - Elecciones y Candidatos Debe rechazar un candidato repetido" time="0.001">
+    <testcase classname="Pruebas de integración - Elecciones y Candidatos Debe rechazar un candidato repetido" name="Pruebas de integración - Elecciones y Candidatos Debe rechazar un candidato repetido" time="0.002">
       <failure>Error: Could not find a working container runtime strategy
     at getContainerRuntimeClient (/app/node_modules/testcontainers/src/container-runtime/clients/client.ts:63:9)
     at processTicksAndRejections (node:internal/process/task_queues:95:5)
@@ -29,7 +29,7 @@
     at GenericContainer.start (/app/node_modules/testcontainers/src/generic-container/generic-container.ts:87:20)
     at Object.&lt;anonymous&gt; (/app/tests/Integracion/elecciones_Candidatos.test.js:27:17)</failure>
     </testcase>
-    <testcase classname="Pruebas de integración - Elecciones y Candidatos Debe abrir una elección correctamente" name="Pruebas de integración - Elecciones y Candidatos Debe abrir una elección correctamente" time="0">
+    <testcase classname="Pruebas de integración - Elecciones y Candidatos Debe abrir una elección correctamente" name="Pruebas de integración - Elecciones y Candidatos Debe abrir una elección correctamente" time="0.001">
       <failure>Error: Could not find a working container runtime strategy
     at getContainerRuntimeClient (/app/node_modules/testcontainers/src/container-runtime/clients/client.ts:63:9)
     at processTicksAndRejections (node:internal/process/task_queues:95:5)
@@ -51,7 +51,7 @@
     at Object.&lt;anonymous&gt; (/app/tests/Integracion/elecciones_Candidatos.test.js:27:17)</failure>
     </testcase>
   </testsuite>
-  <testsuite name="Pruebas de integración - Personas / ValidarSesion" errors="0" failures="1" skipped="0" timestamp="2025-10-29T19:39:37" time="2.843" tests="1">
+  <testsuite name="Pruebas de integración - Personas / ValidarSesion" errors="0" failures="1" skipped="0" timestamp="2025-10-29T19:45:53" time="2.939" tests="1">
     <testcase classname="Pruebas de integración - Personas / ValidarSesion Login correcto devuelve token" name="Pruebas de integración - Personas / ValidarSesion Login correcto devuelve token" time="0.008">
       <failure>TypeError: Cannot read properties of undefined (reading &apos;address&apos;)
     at Test.serverAddress (/app/node_modules/supertest/lib/test.js:61:22)
