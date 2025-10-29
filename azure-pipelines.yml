@@ -41,14 +41,13 @@ steps:
     displayName: 'Run Unit Tests'
 
   # 7️⃣ Ejecutar Integration Tests
-  # 7️⃣ Ejecutar Integration Tests en el host (no en contenedor)
   - script: |
-    npx jest tests/Integracion --verbose --runInBand --reporters=default --reporters=jest-junit
+      npx jest tests/Integracion --verbose --runInBand --reporters=default --reporters=jest-junit
     displayName: 'Run Integration Tests (host)'
     env:
-    DOCKER_HOST: tcp://localhost:2375
-    TESTCONTAINERS_RYUK_DISABLED: true
-    TESTCONTAINERS_CHECKS_DISABLE: true
+      DOCKER_HOST: tcp://localhost:2375
+      TESTCONTAINERS_RYUK_DISABLED: true
+      TESTCONTAINERS_CHECKS_DISABLE: true
 
   # 8️⃣ Publicar resultados de Unit Tests
   - task: PublishTestResults@2
