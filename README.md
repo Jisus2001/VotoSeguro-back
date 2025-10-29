@@ -172,3 +172,6 @@ A continuación, se presenta la lista inicial de pruebas requeridas para verific
 | **Negativa** | Verificar que si el votante ya ha votado, el botón o acción de votación esté deshabilitado o no disponible. |
 | **Seguridad** | Verificar que no se pueda forzar la emisión de un segundo voto mediante manipulación del frontend o llamadas directas a la API. |
 
+Cambio de prueba en pippeline
+
+
