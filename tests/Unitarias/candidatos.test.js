@@ -20,11 +20,16 @@ jest.unstable_mockModule('../../Servicios/Schemas/Candidatos.js', () => {
 
 
 
-jest.unstable_mockModule("../../Servicios/Schemas/PerfilesElecciones.js", () => ({
-  default: {
-    findOne: jest.fn(),
-  }
-}));
+jest.unstable_mockModule("../../Servicios/Schemas/PerfilesElecciones.js", () => {
+  const findOneMock = jest.fn();
+  return {
+    default: {
+      findOne: findOneMock,
+    },
+    __esModule: true,
+  };
+});
+
 let agregarCandidato;
 let Candidatos;
 let PerfilesElecciones;
