@@ -16,33 +16,33 @@ steps:
   # 2️⃣ Instalar Node.js
   - task: NodeTool@0
     inputs:
-      versionSpec: '18.x'
-    displayName: 'Install Node.js'
+      versionSpec: "18.x"
+    displayName: "Install Node.js"
 
   # 3️⃣ Instalar dependencias
   - script: |
       npm ci
-    displayName: 'Install npm dependencies'
+    displayName: "Install npm dependencies"
 
   # 4️⃣ Build de las imágenes de Docker
   - script: |
       docker-compose build
-    displayName: 'Build Docker images'
+    displayName: "Build Docker images"
 
   # 5️⃣ Levantar contenedores de tests (detached)
   - script: |
       docker-compose up -d
-    displayName: 'Start test containers'
+    displayName: "Start test containers"
 
-  # 6️⃣ Ejecutar Unit Tests con límite de memoria Node
+  # 6️⃣ Ejecutar Unit Tests con límite de memoria Node (AUMENTADO A 4096)
   - script: |
-      docker exec unit-tests sh -c "node --max-old-space-size=1024 node_modules/jest/bin/jest.js tests/Unitarias --runInBand --verbose --reporters=default --reporters=jest-junit"
-    displayName: 'Run Unit Tests (Node memory limit)'
+      docker exec unit-tests sh -c "node --max-old-space-size=4096 node_modules/jest/bin/jest.js tests/Unitarias --runInBand --verbose --reporters=default --reporters=jest-junit"
+    displayName: "Run Unit Tests (Memory 4096)"
 
-  # 7️⃣ Ejecutar Integration Tests con límite de memoria Node
+  # 7️⃣ Ejecutar Integration Tests con límite de memoria Node (AUMENTADO A 8192)
   - script: |
-      docker exec integration-tests sh -c "node --max-old-space-size=2048 node_modules/jest/bin/jest.js tests/Integracion --runInBand --verbose --reporters=default --reporters=jest-junit"
-    displayName: 'Run Integration Tests (Node memory limit)'
+      docker exec integration-tests sh -c "node --max-old-space-size=8192 node_modules/jest/bin/jest.js tests/Integracion --runInBand --verbose --reporters=default --reporters=jest-junit"
+    displayName: "Run Integration Tests (Memory 8192)"
     env:
       DOCKER_HOST: tcp://host.docker.internal:2375
       TESTCONTAINERS_HOST_OVERRIDE: host.docker.internal
@@ -52,20 +52,20 @@ steps:
   # 8️⃣ Publicar resultados Unit Tests
   - task: PublishTestResults@2
     inputs:
-      testResultsFiles: '**/reports/unit/*.xml'
-      testRunTitle: 'Unit Tests'
+      testResultsFiles: "**/reports/unit/*.xml"
+      testRunTitle: "Unit Tests"
       mergeTestResults: true
       failTaskOnFailedTests: true
 
   # 9️⃣ Publicar resultados Integration Tests
   - task: PublishTestResults@2
     inputs:
-      testResultsFiles: '**/reports/integration/*.xml'
-      testRunTitle: 'Integration Tests'
+      testResultsFiles: "**/reports/integration/*.xml"
+      testRunTitle: "Integration Tests"
       mergeTestResults: true
       failTaskOnFailedTests: true
 
   # 🔹 Limpiar contenedores al final
   - script: |
       docker-compose down -v
-    displayName: 'Clean up test containers'
+    displayName: "Clean up test containers"
