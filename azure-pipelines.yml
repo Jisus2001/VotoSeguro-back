@@ -7,11 +7,26 @@ pool:
   name: 'VotoSeguroPool'
 
 variables:
+  # Habilita BuildKit
   DOCKER_BUILDKIT: 1
 
 steps:
   # 1️⃣ Checkout del código
   - checkout: self
+
+  # 🧨 Limpieza total de contenedores (debug opcional)
+  - script: |
+      echo "🧨 Eliminando todos los contenedores activos..."
+      docker ps -aq | ForEach-Object { docker rm -f $_ } || true
+    displayName: 'Force remove all containers (debug only)'
+
+  # 🔹 Limpieza específica de contenedores previos
+  - script: |
+      echo "🧹 Limpiando contenedores previos..."
+      docker-compose down -v || true
+      docker rm -f unit-tests || true
+      docker rm -f integration-tests || true
+    displayName: 'Clean previous containers'
 
   # 2️⃣ Instalar Node.js
   - task: NodeTool@0
@@ -44,7 +59,6 @@ steps:
       docker exec integration-tests sh -c "npm run test:integration || true"
     displayName: 'Run Integration Tests'
     env:
-      # Variables para Testcontainers dentro del contenedor
       DOCKER_HOST: tcp://host.docker.internal:2375
       TESTCONTAINERS_HOST_OVERRIDE: host.docker.internal
       TESTCONTAINERS_RYUK_DISABLED: true
@@ -66,7 +80,7 @@ steps:
       mergeTestResults: true
       failTaskOnFailedTests: true
 
-  # 🔹 Limpiar contenedores al final
+  # 🔹 Limpieza final (opcional si ya limpiaste al inicio)
   - script: |
       docker-compose down -v
-    displayName: 'Clean up test containers'
+    displayName: 'Final clean-up'
