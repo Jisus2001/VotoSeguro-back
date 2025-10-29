@@ -3,16 +3,17 @@ services:
     build: .
     container_name: unit-tests
     command: >
-      sh -c "node --experimental-vm-modules node_modules/jest/bin/jest.js
-      tests/Unitarias --runInBand --verbose --reporters=default
+      sh -c "node --max-old-space-size=1024 --experimental-vm-modules node_modules/jest/bin/jest.js
+      tests/Unitarias --runInBand --maxWorkers=50% --verbose --reporters=default
       --reporters=jest-junit"
     volumes:
       - .:/app:cached
-      - /app/node_modules 
+      - /app/node_modules
       - ./reports:/app/reports
     environment:
       - JEST_JUNIT_OUTPUT_DIR=./reports/unit
       - JEST_JUNIT_OUTPUT_NAME=unit-report.xml
+    mem_limit: 2g  # ✅ Limita el contenedor a 2 GB para evitar OOM
 
   integration-tests:
     build: .
@@ -20,17 +21,15 @@ services:
     depends_on:
       - unit-tests
     command: >
-      sh -c " npx jest tests/Integracion --verbose --runInBand --reporters=default
+      sh -c "node --max-old-space-size=1024 npx jest tests/Integracion --runInBand --maxWorkers=50% --verbose --reporters=default
       --reporters=jest-junit"
     volumes:
       - .:/app:cached
-      - /app/node_modules 
+      - /app/node_modules
       - ./reports:/app/reports
     environment:
       - JEST_JUNIT_OUTPUT_DIR=./reports/integration
       - JEST_JUNIT_OUTPUT_NAME=integration-report.xml
-      
-       # 👇 Variables recomendadas por Testcontainers para contenedores dentro de Docker
       - TESTCONTAINERS_HOST_OVERRIDE=host.docker.internal
       - DOCKER_HOST=tcp://host.docker.internal:2375
-
+    mem_limit: 2g  # ✅ También limita este contenedor
