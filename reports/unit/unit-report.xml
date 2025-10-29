@@ -1,15 +1,15 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<testsuites name="jest tests" tests="4" failures="0" errors="0" time="2.188">
-  <testsuite name="S-01 Autenticación (HU1) - Rechazo de credenciales inválidas" errors="0" failures="0" skipped="0" timestamp="2025-10-29T02:13:14" time="1.534" tests="3">
-    <testcase classname="S-01 Autenticación (HU1) - Rechazo de credenciales inválidas HU1: Retorna 441 si la contraseña es incorrecta y el usuario no está bloqueado" name="S-01 Autenticación (HU1) - Rechazo de credenciales inválidas HU1: Retorna 441 si la contraseña es incorrecta y el usuario no está bloqueado" time="0.016">
+<testsuites name="jest tests" tests="4" failures="0" errors="0" time="3.958">
+  <testsuite name="S-01 Autenticación (HU1) - Rechazo de credenciales inválidas" errors="0" failures="0" skipped="0" timestamp="2025-10-29T19:39:25" time="2.775" tests="3">
+    <testcase classname="S-01 Autenticación (HU1) - Rechazo de credenciales inválidas HU1: Retorna 441 si la contraseña es incorrecta y el usuario no está bloqueado" name="S-01 Autenticación (HU1) - Rechazo de credenciales inválidas HU1: Retorna 441 si la contraseña es incorrecta y el usuario no está bloqueado" time="0.011">
     </testcase>
-    <testcase classname="S-01 Autenticación (HU1) - Rechazo de credenciales inválidas HU1: Retorna 441 si el usuario no existe" name="S-01 Autenticación (HU1) - Rechazo de credenciales inválidas HU1: Retorna 441 si el usuario no existe" time="0.013">
+    <testcase classname="S-01 Autenticación (HU1) - Rechazo de credenciales inválidas HU1: Retorna 441 si el usuario no existe" name="S-01 Autenticación (HU1) - Rechazo de credenciales inválidas HU1: Retorna 441 si el usuario no existe" time="0.002">
     </testcase>
-    <testcase classname="S-01 Autenticación (HU1) - Rechazo de credenciales inválidas S-02: Bloqueo tras múltiples intentos fallidos consecutivos (usuario &apos;votante&apos;)" name="S-01 Autenticación (HU1) - Rechazo de credenciales inválidas S-02: Bloqueo tras múltiples intentos fallidos consecutivos (usuario &apos;votante&apos;)" time="0.096">
+    <testcase classname="S-01 Autenticación (HU1) - Rechazo de credenciales inválidas S-02: Bloqueo tras múltiples intentos fallidos consecutivos (usuario &apos;votante&apos;)" name="S-01 Autenticación (HU1) - Rechazo de credenciales inválidas S-02: Bloqueo tras múltiples intentos fallidos consecutivos (usuario &apos;votante&apos;)" time="0.171">
     </testcase>
   </testsuite>
-  <testsuite name="undefined" errors="0" failures="0" skipped="0" timestamp="2025-10-29T02:13:16" time="0.488" tests="1">
-    <testcase classname=" Debería agregar candidato correctamente" name=" Debería agregar candidato correctamente" time="0.013">
+  <testsuite name="undefined" errors="0" failures="0" skipped="0" timestamp="2025-10-29T19:39:28" time="0.847" tests="1">
+    <testcase classname=" Debería agregar candidato correctamente" name=" Debería agregar candidato correctamente" time="0.022">
     </testcase>
   </testsuite>
 </testsuites>
