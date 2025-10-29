@@ -34,22 +34,27 @@ steps:
       docker-compose up -d
     displayName: "Start test containers"
 
-  # 6️⃣ Ejecutar Unit Tests con límite de memoria Node (AUMENTADO A 4096)
+  # 6️⃣ Diagnóstico de memoria dentro del contenedor unit-tests
   - script: |
-      docker exec unit-tests sh -c "node --max-old-space-size=4096 node_modules/jest/bin/jest.js tests/Unitarias --runInBand --verbose --reporters=default --reporters=jest-junit"
-    displayName: "Run Unit Tests (Memory 4096)"
+      docker exec unit-tests free -h
+    displayName: "Verificar memoria disponible en unit-tests"
 
-  # 7️⃣ Ejecutar Integration Tests con límite de memoria Node (AUMENTADO A 8192)
+  # 7️⃣ Ejecutar Unit Tests con límite de memoria ajustado
   - script: |
-      docker exec integration-tests sh -c "node --max-old-space-size=8192 node_modules/jest/bin/jest.js tests/Integracion --runInBand --verbose --reporters=default --reporters=jest-junit"
-    displayName: "Run Integration Tests (Memory 8192)"
+      docker exec unit-tests sh -c "node --max-old-space-size=1024 node_modules/jest/bin/jest.js tests/Unitarias --runInBand --maxWorkers=50% --verbose --reporters=default --reporters=jest-junit"
+    displayName: "Run Unit Tests (Memory 1024)"
+
+  # 8️⃣ Ejecutar Integration Tests con límite de memoria ajustado
+  - script: |
+      docker exec integration-tests sh -c "node --max-old-space-size=2048 node_modules/jest/bin/jest.js tests/Integracion --runInBand --maxWorkers=50% --verbose --reporters=default --reporters=jest-junit"
+    displayName: "Run Integration Tests (Memory 2048)"
     env:
       DOCKER_HOST: tcp://host.docker.internal:2375
       TESTCONTAINERS_HOST_OVERRIDE: host.docker.internal
       TESTCONTAINERS_RYUK_DISABLED: true
       TESTCONTAINERS_CHECKS_DISABLE: true
 
-  # 8️⃣ Publicar resultados Unit Tests
+  # 9️⃣ Publicar resultados Unit Tests
   - task: PublishTestResults@2
     inputs:
       testResultsFiles: "**/reports/unit/*.xml"
@@ -57,7 +62,7 @@ steps:
       mergeTestResults: true
       failTaskOnFailedTests: true
 
-  # 9️⃣ Publicar resultados Integration Tests
+  # 🔟 Publicar resultados Integration Tests
   - task: PublishTestResults@2
     inputs:
       testResultsFiles: "**/reports/integration/*.xml"
