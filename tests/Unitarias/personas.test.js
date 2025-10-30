@@ -20,13 +20,20 @@ jest.unstable_mockModule("../../Servicios/Schemas/Personas.js", () => {
   };
 });
 
+// 🧩 Mock de bcrypt si lo usas
+jest.unstable_mockModule("bcrypt", () => ({
+  compare: jest.fn(),
+}));
+
 let validarSesion;
 let Personas;
+let bcrypt;
 
 describe("S-01 Autenticación (HU1) - Rechazo de credenciales inválidas", () => {
   beforeAll(async () => {
     ({ validarSesion } = await import("../../Servicios/Controllers/Personas.js"));
     ({ default: Personas } = await import("../../Servicios/Schemas/Personas.js"));
+    bcrypt = await import("bcrypt");
   });
 
   beforeEach(() => {
@@ -36,7 +43,7 @@ describe("S-01 Autenticación (HU1) - Rechazo de credenciales inválidas", () =>
   test("HU1: Retorna 441 si la contraseña es incorrecta y el usuario no está bloqueado", async () => {
     const usuarioSimulado = {
       Identificacion: "admin",
-      Contrasenna: "correcta123",
+      Contrasenna: "hashed_password",
       Nombre: "Administrador",
       Perfil: "Admin",
       IntentosFallidos: 1,
@@ -45,6 +52,7 @@ describe("S-01 Autenticación (HU1) - Rechazo de credenciales inválidas", () =>
 
     Personas.findOne.mockResolvedValue({ ...usuarioSimulado });
     Personas.updateOne.mockResolvedValue({});
+    bcrypt.compare.mockResolvedValue(false); // Simula contraseña incorrecta
 
     const credenciales = {
       Identificacion: "admin",
@@ -76,7 +84,7 @@ describe("S-01 Autenticación (HU1) - Rechazo de credenciales inválidas", () =>
   test("S-02: Bloqueo tras múltiples intentos fallidos consecutivos (usuario 'votante')", async () => {
     const usuarioBase = {
       Identificacion: "votante",
-      Contrasenna: "correcta123",
+      Contrasenna: "hashed_password",
       Nombre: "Votante Ejemplo",
       Perfil: "Votante",
       IntentosFallidos: 0,
@@ -100,6 +108,8 @@ describe("S-01 Autenticación (HU1) - Rechazo de credenciales inválidas", () =>
         };
       }
     });
+
+    bcrypt.compare.mockResolvedValue(false); // Simula contraseña incorrecta
 
     const credencialesIncorrectas = {
       Identificacion: "votante",
