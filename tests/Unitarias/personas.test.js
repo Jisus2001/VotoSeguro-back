@@ -6,13 +6,20 @@
 import { jest } from "@jest/globals";
 
 // ⚠️ Mock ESM del módulo
-jest.unstable_mockModule("../../Servicios/Schemas/Personas.js", () => ({
-  default: {
-    findOne: jest.fn(),
-    updateOne: jest.fn(), // ✅ Agregado para evitar errores en los tests
-  },
-  __esModule: true,
-}));
+jest.unstable_mockModule("../../Servicios/Schemas/Personas.js", () => {
+  const findOneMock = jest.fn();
+  const updateOneMock = jest.fn();
+
+  const PersonasMock = function () {};
+  PersonasMock.findOne = findOneMock;
+  PersonasMock.updateOne = updateOneMock;
+
+  return {
+    default: PersonasMock,
+    __esModule: true,
+  };
+});
+
 
 let validarSesion;
 let Personas;

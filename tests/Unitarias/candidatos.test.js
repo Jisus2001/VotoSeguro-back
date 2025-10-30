@@ -20,15 +20,26 @@ jest.unstable_mockModule('../../Servicios/Schemas/Candidatos.js', () => {
 
 
 
-jest.unstable_mockModule("../../Servicios/Schemas/PerfilesElecciones.js", () => {
+jest.unstable_mockModule("../../Servicios/Schemas/Candidatos.js", () => {
   const findOneMock = jest.fn();
+  const deleteOneMock = jest.fn();
+  const saveMock = jest.fn();
+
+  // Simula el constructor del modelo
+  const CandidatosMock = function () {
+    return { save: saveMock };
+  };
+
+  // Métodos estáticos del modelo
+  CandidatosMock.findOne = findOneMock;
+  CandidatosMock.deleteOne = deleteOneMock;
+
   return {
-    default: {
-      findOne: findOneMock,
-    },
+    default: CandidatosMock,
     __esModule: true,
   };
 });
+
 
 let agregarCandidato;
 let Candidatos;
