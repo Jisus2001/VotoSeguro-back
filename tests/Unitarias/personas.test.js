@@ -9,7 +9,9 @@ import { jest } from "@jest/globals";
 jest.unstable_mockModule("../../Servicios/Schemas/Personas.js", () => ({
   default: {
     findOne: jest.fn(),
+    updateOne: jest.fn(), // ✅ Agregado para evitar errores en los tests
   },
+  __esModule: true,
 }));
 
 let validarSesion;
