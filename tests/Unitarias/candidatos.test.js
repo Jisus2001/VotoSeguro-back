@@ -52,9 +52,13 @@ beforeEach(() => {
 });
 
 test("Debería agregar candidato correctamente", async () => {
+  // ✅ Simula que el perfil existe
   PerfilesElecciones.findOne.mockResolvedValue({ IdPerfil: 1, Descripcion: "Perfil 1" });
+
+  // ✅ Simula que no existe un candidato con ese nombre
   Candidatos.findOne.mockResolvedValue(null);
 
+  // ✅ Simula que el candidato se guarda correctamente
   const saveMock = jest.fn().mockResolvedValue(true);
   Candidatos.mockImplementation(() => ({ save: saveMock }));
 
