@@ -39,15 +39,15 @@ steps:
       docker exec unit-tests free -h
     displayName: "Verificar memoria disponible en unit-tests"
 
-  # 7️⃣ Ejecutar Unit Tests con límite de memoria ajustado (CORREGIDO)
+# 7️⃣ Ejecutar Unit Tests con límite de memoria ajustado (CORREGIDO)
   - script: |
-      docker exec unit-tests sh -c "node --expose-gc --max-old-space-size=2048 node_modules/jest/bin/jest.js tests/Unitarias --runInBand --logHeapUsage --verbose --reporters=default --reporters=jest-junit"
+      docker exec unit-tests sh -c "node --expose-gc --experimental-vm-modules --max-old-space-size=2048 node_modules/jest/bin/jest.js tests/Unitarias --runInBand --logHeapUsage --verbose --reporters=default --reporters=jest-junit"
     displayName: "Run Unit Tests (Node memory limit 2048MB)"
     continueOnError: false
 
   # 8️⃣ Ejecutar Integration Tests con límite de memoria ajustado
   - script: |
-      docker exec integration-tests sh -c "node --expose-gc --max-old-space-size=3072 node_modules/jest/bin/jest.js tests/Integracion --runInBand --logHeapUsage --verbose --reporters=default --reporters=jest-junit"
+      docker exec integration-tests sh -c "node --expose-gc --experimental-vm-modules --max-old-space-size=3072 node_modules/jest/bin/jest.js tests/Integracion --runInBand --logHeapUsage --verbose --reporters=default --reporters=jest-junit"
     displayName: "Run Integration Tests (Node memory limit 3072MB)"
     continueOnError: false
     env:
