@@ -5,11 +5,13 @@
 
 import { jest } from "@jest/globals";
 
+const saveMock=jest.fn ();
+const findOneMock=jest.fn ();
+const deleteOneMock=jest.fn ();
+
 // 🧩 Mock del modelo Candidatos (Mongoose)
 jest.unstable_mockModule("../../Servicios/Schemas/Candidatos.js", () => {
-  const findOneMock = jest.fn();
-  const deleteOneMock = jest.fn();
-  const saveMock = jest.fn();
+
 
   const CandidatosMock = function () {
     return { save: saveMock };
@@ -26,10 +28,10 @@ jest.unstable_mockModule("../../Servicios/Schemas/Candidatos.js", () => {
 
 // 🧩 Mock del modelo PerfilesElecciones (Mongoose)
 jest.unstable_mockModule("../../Servicios/Schemas/PerfilesElecciones.js", () => {
-  const findOneMock = jest.fn();
+  const perfilFindOneMock = jest.fn();
 
   const PerfilesEleccionesMock = function () {};
-  PerfilesEleccionesMock.findOne = findOneMock;
+  PerfilesEleccionesMock.findOne = perfilFindOneMock;
 
   return {
     default: PerfilesEleccionesMock,
@@ -59,9 +61,8 @@ test("Debería agregar candidato correctamente", async () => {
   Candidatos.findOne.mockResolvedValue(null);
 
   // ✅ Simula que el candidato se guarda correctamente
-  const saveMock = jest.fn().mockResolvedValue(true);
-  Candidatos.mockImplementation(() => ({ save: saveMock }));
-
+  saveMock.mockResolvedValue(true);
+  
   const data = {
     Nombre: "Candidato Prueba",
     Partido: "Partido XYZ",
