@@ -5,19 +5,21 @@
 
 import { jest } from "@jest/globals";
 
-const saveMock=jest.fn ();
-const findOneMock=jest.fn ();
-const deleteOneMock=jest.fn ();
+// 🧩 Mocks para Candidatos
+const saveMock = jest.fn();
+const candidatosFindOneMock = jest.fn();
+const deleteOneMock = jest.fn();
+
+// 🧩 Mocks para PerfilesElecciones
+const perfilFindOneMock = jest.fn();
 
 // 🧩 Mock del modelo Candidatos (Mongoose)
 jest.unstable_mockModule("../../Servicios/Schemas/Candidatos.js", () => {
-
-
   const CandidatosMock = function () {
     return { save: saveMock };
   };
 
-  CandidatosMock.findOne = findOneMock;
+  CandidatosMock.findOne = candidatosFindOneMock;
   CandidatosMock.deleteOne = deleteOneMock;
 
   return {
@@ -28,8 +30,6 @@ jest.unstable_mockModule("../../Servicios/Schemas/Candidatos.js", () => {
 
 // 🧩 Mock del modelo PerfilesElecciones (Mongoose)
 jest.unstable_mockModule("../../Servicios/Schemas/PerfilesElecciones.js", () => {
-  const perfilFindOneMock = jest.fn();
-
   const PerfilesEleccionesMock = function () {};
   PerfilesEleccionesMock.findOne = perfilFindOneMock;
 
@@ -54,15 +54,15 @@ beforeEach(() => {
 });
 
 test("Debería agregar candidato correctamente", async () => {
-  // ✅ Simula que el perfil existe AQUI VEREMOS SI CAMBIA EL CODIGO???????
-  PerfilesElecciones.findOne.mockResolvedValue({ IdPerfil: 1, Descripcion: "Perfil 1" });
+  // ✅ Simula que el perfil existe
+  perfilFindOneMock.mockResolvedValue({ IdPerfil: 1, Descripcion: "Perfil 1" });
 
   // ✅ Simula que no existe un candidato con ese nombre
-  Candidatos.findOne.mockResolvedValue(null);
+  candidatosFindOneMock.mockResolvedValue(null);
 
   // ✅ Simula que el candidato se guarda correctamente
   saveMock.mockResolvedValue(true);
-  
+
   const data = {
     Nombre: "Candidato Prueba",
     Partido: "Partido XYZ",
@@ -77,6 +77,6 @@ test("Debería agregar candidato correctamente", async () => {
     mensaje: "Candidato agregado correctamente",
   });
 
-  expect(Candidatos.findOne).toHaveBeenCalledWith({ Nombre: "Candidato Prueba" });
+  expect(candidatosFindOneMock).toHaveBeenCalledWith({ Nombre: "Candidato Prueba" });
   expect(saveMock).toHaveBeenCalled();
 });
