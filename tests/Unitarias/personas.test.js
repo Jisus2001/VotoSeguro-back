@@ -5,11 +5,15 @@
 
 import { jest } from "@jest/globals";
 
+// 🧩 Mocks para Personas
+const findOneMock = jest.fn();
+const updateOneMock = jest.fn();
+
+// 🧩 Mock para bcrypt
+const bcryptCompareMock = jest.fn();
+
 // 🧩 Mock del modelo Personas (Mongoose)
 jest.unstable_mockModule("../../Servicios/Schemas/Personas.js", () => {
-  const findOneMock = jest.fn();
-  const updateOneMock = jest.fn();
-
   const PersonasMock = function () {};
   PersonasMock.findOne = findOneMock;
   PersonasMock.updateOne = updateOneMock;
@@ -20,9 +24,9 @@ jest.unstable_mockModule("../../Servicios/Schemas/Personas.js", () => {
   };
 });
 
-// 🧩 Mock de bcrypt si lo usas
+// 🧩 Mock de bcrypt
 jest.unstable_mockModule("bcrypt", () => ({
-  compare: jest.fn(),
+  compare: bcryptCompareMock,
 }));
 
 let validarSesion;
@@ -50,9 +54,9 @@ describe("S-01 Autenticación (HU1) - Rechazo de credenciales inválidas", () =>
       BloqueadoHasta: null,
     };
 
-    Personas.findOne.mockResolvedValue({ ...usuarioSimulado });
-    Personas.updateOne.mockResolvedValue({});
-    bcrypt.compare.mockResolvedValue(false); // Simula contraseña incorrecta
+    findOneMock.mockResolvedValue({ ...usuarioSimulado });
+    updateOneMock.mockResolvedValue({});
+    bcryptCompareMock.mockResolvedValue(false); // Simula contraseña incorrecta
 
     const credenciales = {
       Identificacion: "admin",
@@ -67,7 +71,7 @@ describe("S-01 Autenticación (HU1) - Rechazo de credenciales inválidas", () =>
   });
 
   test("HU1: Retorna 441 si el usuario no existe", async () => {
-    Personas.findOne.mockResolvedValue(null);
+    findOneMock.mockResolvedValue(null);
 
     const credenciales = {
       Identificacion: "admin",
@@ -93,14 +97,14 @@ describe("S-01 Autenticación (HU1) - Rechazo de credenciales inválidas", () =>
 
     let usuarioSimulado = { ...usuarioBase };
 
-    Personas.findOne.mockImplementation(async ({ Identificacion }) => {
+    findOneMock.mockImplementation(async ({ Identificacion }) => {
       if (Identificacion === "votante") {
         return { ...usuarioSimulado };
       }
       return null;
     });
 
-    Personas.updateOne.mockImplementation(async (_filtro, update) => {
+    updateOneMock.mockImplementation(async (_filtro, update) => {
       if (update.$set) {
         usuarioSimulado = {
           ...usuarioSimulado,
@@ -109,7 +113,7 @@ describe("S-01 Autenticación (HU1) - Rechazo de credenciales inválidas", () =>
       }
     });
 
-    bcrypt.compare.mockResolvedValue(false); // Simula contraseña incorrecta
+    bcryptCompareMock.mockResolvedValue(false); // Simula contraseña incorrecta
 
     const credencialesIncorrectas = {
       Identificacion: "votante",
