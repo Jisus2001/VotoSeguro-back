@@ -1,13 +1,24 @@
-// tests/setup.js
-// Configuración global para Jest con ESM
+/**
+ * @file setup.js
+ * @description Configuración global para Jest - Mock de Mongoose (ESM)
+ */
+
 import { jest } from '@jest/globals';
 
-// Timeout global más largo para tests de integración
-jest.setTimeout(30000);
+// 🔧 CRÍTICO: En ESM con experimental-vm-modules, 
+// jest.mock() NO funciona en setup files
+// Los mocks deben estar en cada archivo de test individual
 
-// Manejo de errores no capturados
-process.on('unhandledRejection', (reason, promise) => {
-  console.error('Unhandled Rejection at:', promise, 'reason:', reason);
+// 🔧 Aumentar timeout global
+jest.setTimeout(15000);
+
+// 🔧 Limpiar después de cada test
+afterEach(() => {
+  jest.clearAllMocks();
 });
 
-export default undefined;
+// 🔧 Cerrar conexiones después de todos los tests
+afterAll(async () => {
+  // Dar tiempo para que las operaciones asíncronas terminen
+  await new Promise(resolve => setTimeout(resolve, 1000));
+});
