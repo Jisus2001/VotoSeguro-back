@@ -1,21 +1,23 @@
+import { jest } from "@jest/globals";
 import { GenericContainer } from "testcontainers";
-import mongoose from "mongoose";
 import request from "supertest";
-import app from "../../app.js";
-import Personas from "../../Servicios/Schemas/Personas.js";
 
-// // 🔑 Esta línea hace que Testcontainers use Docker Desktop en Windows
-// process.env.TESTCONTAINERS_HOST_OVERRIDE = "host.docker.internal";
+// 🔑 Importación dinámica para evitar problemas con ESM
+let mongoose;
+let app;
+let Personas;
 
 describe("Pruebas de integración - Personas / ValidarSesion", () => {
   let container;
   let server;
 
   beforeAll(async () => {
-  //  jest.setTimeout(60000); // 60 segundos
-  jest.setTimeout(30000); // 30 segundos
+    jest.setTimeout(30000);
 
-
+    // Importar módulos dinámicamente
+    mongoose = (await import("mongoose")).default;
+    app = (await import("../../app.js")).default;
+    Personas = (await import("../../Servicios/Schemas/Personas.js")).default;
 
     try {
       container = await new GenericContainer("mongo:7")
@@ -39,11 +41,12 @@ describe("Pruebas de integración - Personas / ValidarSesion", () => {
       server = app.listen(0);
     } catch (err) {
       console.error("Error iniciando contenedor o base de datos:", err);
+      throw err;
     }
   });
 
   afterAll(async () => {
-    await mongoose.disconnect();
+    if (mongoose) await mongoose.disconnect();
     if (container) await container.stop();
     if (server) await server.close();
   });
