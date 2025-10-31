@@ -39,26 +39,27 @@ steps:
       docker exec unit-tests free -h
     displayName: "Verificar memoria disponible en unit-tests"
 
-# 7️⃣ Ejecutar Unit Tests con límite de memoria ajustado (CORREGIDO)
+  # 7️⃣ Ejecutar Unit Tests con límite de memoria ajustado
   - script: |
       docker exec unit-tests sh -c "node --expose-gc --experimental-vm-modules --max-old-space-size=2048 node_modules/jest/bin/jest.js tests/Unitarias --runInBand --logHeapUsage --verbose --reporters=default --reporters=jest-junit"
     displayName: "Run Unit Tests (Node memory limit 2048MB)"
     continueOnError: false
 
-  # 8️⃣ Ejecutar Integration Tests con límite de memoria ajustado
-# 8️⃣ Ejecutar Integration Tests con límite de memoria ajustado
+  # 8️⃣ Bajar contenedores antes de tests de integración
   - script: |
-      docker exec integration-tests sh -c "node --expose-gc --experimental-vm-modules --max-old-space-size=3072 node_modules/jest/bin/jest.js tests/Integracion --runInBand --logHeapUsage --verbose --reporters=default --reporters=jest-junit"
+      docker-compose down -v
+    displayName: "Stop test containers before integration tests"
+
+  # 9️⃣ Ejecutar Integration Tests DIRECTAMENTE en el agente (no en Docker)
+  - script: |
+      node --expose-gc --experimental-vm-modules --max-old-space-size=3072 node_modules/jest/bin/jest.js tests/Integracion --runInBand --logHeapUsage --verbose --reporters=default --reporters=jest-junit
     displayName: "Run Integration Tests (Node memory limit 3072MB)"
     continueOnError: false
-    # 🔑 REMOVIDAS las variables de entorno DOCKER_HOST
     env:
-      DOCKER_HOST: tcp://host.docker.internal:2375
-      TESTCONTAINERS_HOST_OVERRIDE: host.docker.internal
-      TESTCONTAINERS_RYUK_DISABLED: true
-      TESTCONTAINERS_CHECKS_DISABLE: true
+      JEST_JUNIT_OUTPUT_DIR: ./reports/integration
+      JEST_JUNIT_OUTPUT_NAME: integration-report.xml
 
-  # 9️⃣ Publicar resultados Unit Tests
+  # 🔟 Publicar resultados Unit Tests
   - task: PublishTestResults@2
     inputs:
       testResultsFiles: "**/reports/unit/*.xml"
@@ -67,7 +68,7 @@ steps:
       failTaskOnFailedTests: true
     condition: always()
 
-  # 🔟 Publicar resultados Integration Tests
+  # 1️⃣1️⃣ Publicar resultados Integration Tests
   - task: PublishTestResults@2
     inputs:
       testResultsFiles: "**/reports/integration/*.xml"
@@ -76,7 +77,7 @@ steps:
       failTaskOnFailedTests: true
     condition: always()
 
-  # 🔹 Limpiar contenedores al final
+  # 1️⃣2️⃣ Limpiar contenedores al final
   - script: |
       docker-compose down -v
     displayName: "Clean up test containers"
