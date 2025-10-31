@@ -5,6 +5,25 @@
 
 import { jest } from "@jest/globals";
 
+// 🔧 CRÍTICO: Mock de Mongoose ANTES de cualquier importación
+jest.unstable_mockModule("mongoose", () => ({
+  default: {
+    connect: jest.fn().mockResolvedValue(true),
+    connection: {
+      readyState: 1,
+      close: jest.fn().mockResolvedValue(true),
+    },
+    Schema: class Schema {
+      constructor() {}
+    },
+    model: jest.fn(),
+  },
+  Schema: class Schema {
+    constructor() {}
+  },
+  model: jest.fn(),
+}));
+
 // 🧩 Mocks para Personas
 const findOneMock = jest.fn();
 const updateOneMock = jest.fn();
@@ -35,8 +54,12 @@ let bcrypt;
 
 describe("S-01 Autenticación (HU1) - Rechazo de credenciales inválidas", () => {
   beforeAll(async () => {
-    ({ validarSesion } = await import("../../Servicios/Controllers/Personas.js"));
-    ({ default: Personas } = await import("../../Servicios/Schemas/Personas.js"));
+    ({ validarSesion } = await import(
+      "../../Servicios/Controllers/Personas.js"
+    ));
+    ({ default: Personas } = await import(
+      "../../Servicios/Schemas/Personas.js"
+    ));
     bcrypt = await import("bcrypt");
   });
 
