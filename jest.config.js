@@ -6,9 +6,11 @@ export default {
   // 🔑 NO uses transform con ESM
   transform: {},
   
-  // 🔑 CRÍTICO: Permite que Jest procese mongodb y sus dependencias
+  // 🔑 CRÍTICO: Permite que Jest procese testcontainers y sus dependencias
   transformIgnorePatterns: [
     "node_modules/(?!(" +
+    "testcontainers|" +
+    "undici|" +
     "mongodb|" +
     "mongoose|" +
     "bson|" +
@@ -28,14 +30,23 @@ export default {
   // Setup files
   setupFilesAfterEnv: ["<rootDir>/tests/setup.js"],
   
-  // 🔑 AUMENTAR timeout para las operaciones de Mongoose
-  testTimeout: 15000,
+  // 🔑 CRÍTICO: Configurar globals para undici
+  globals: {
+    File: global.File,
+    FormData: global.FormData,
+  },
+  
+  // 🔑 AUMENTAR timeout para las operaciones de Mongoose y Testcontainers
+  testTimeout: 60000,
   
   // 🔑 CRÍTICO: Forzar cierre después de las pruebas
   forceExit: true,
   
   // 🔑 Detectar handles abiertos para debugging
   detectOpenHandles: true,
+  
+  // 🔑 CRÍTICO: Testcontainers necesita más tiempo
+  maxWorkers: 1,
   
   // Reportes
   reporters: [

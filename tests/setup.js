@@ -5,12 +5,29 @@
 
 import { jest } from '@jest/globals';
 
-// 🔧 CRÍTICO: En ESM con experimental-vm-modules, 
-// jest.mock() NO funciona en setup files
-// Los mocks deben estar en cada archivo de test individual
+// 🔧 CRÍTICO: Polyfills para undici
+global.File = class File {
+  constructor(bits, name, options) {
+    this.bits = bits;
+    this.name = name;
+    this.options = options;
+  }
+};
 
-// 🔧 Aumentar timeout global
-jest.setTimeout(15000);
+global.FormData = class FormData {
+  constructor() {
+    this.data = new Map();
+  }
+  append(key, value) {
+    this.data.set(key, value);
+  }
+  get(key) {
+    return this.data.get(key);
+  }
+};
+
+// 🔧 Aumentar timeout global para Testcontainers
+jest.setTimeout(60000);
 
 // 🔧 Limpiar después de cada test
 afterEach(() => {
@@ -20,5 +37,5 @@ afterEach(() => {
 // 🔧 Cerrar conexiones después de todos los tests
 afterAll(async () => {
   // Dar tiempo para que las operaciones asíncronas terminen
-  await new Promise(resolve => setTimeout(resolve, 1000));
+  await new Promise(resolve => setTimeout(resolve, 2000));
 });
