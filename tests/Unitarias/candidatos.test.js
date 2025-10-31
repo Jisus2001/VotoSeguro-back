@@ -54,7 +54,7 @@ beforeEach(() => {
 });
 
 test("Debería agregar candidato correctamente", async () => {
-  // ✅ Simula que el perfil existe
+  // ✅ Simula que el perfil existe AQUI VEREMOS SI CAMBIA EL CODIGO???????
   PerfilesElecciones.findOne.mockResolvedValue({ IdPerfil: 1, Descripcion: "Perfil 1" });
 
   // ✅ Simula que no existe un candidato con ese nombre
