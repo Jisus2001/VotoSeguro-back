@@ -46,10 +46,12 @@ steps:
     continueOnError: false
 
   # 8️⃣ Ejecutar Integration Tests con límite de memoria ajustado
+# 8️⃣ Ejecutar Integration Tests con límite de memoria ajustado
   - script: |
       docker exec integration-tests sh -c "node --expose-gc --experimental-vm-modules --max-old-space-size=3072 node_modules/jest/bin/jest.js tests/Integracion --runInBand --logHeapUsage --verbose --reporters=default --reporters=jest-junit"
     displayName: "Run Integration Tests (Node memory limit 3072MB)"
     continueOnError: false
+    # 🔑 REMOVIDAS las variables de entorno DOCKER_HOST
     env:
       DOCKER_HOST: tcp://host.docker.internal:2375
       TESTCONTAINERS_HOST_OVERRIDE: host.docker.internal

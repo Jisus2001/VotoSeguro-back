@@ -2,7 +2,6 @@ services:
   unit-tests:
     build: .
     container_name: unit-tests
-    # NO ejecutar tests automáticamente al iniciar - el pipeline lo hará
     command: tail -f /dev/null
     volumes:
       - .:/app:cached
@@ -20,18 +19,18 @@ services:
     container_name: integration-tests
     depends_on:
       - unit-tests
-    # NO ejecutar tests automáticamente al iniciar - el pipeline lo hará
     command: tail -f /dev/null
     volumes:
       - .:/app:cached
       - /app/node_modules
       - ./reports:/app/reports
-      - /var/run/docker.sock:/var/run/docker.sock  # Para Testcontainers
+      # 🔑 WINDOWS: Usar named pipe en lugar de socket Unix
+      - //var/run/docker.sock:/var/run/docker.sock
     environment:
       - JEST_JUNIT_OUTPUT_DIR=./reports/integration
       - JEST_JUNIT_OUTPUT_NAME=integration-report.xml
-      - TESTCONTAINERS_HOST_OVERRIDE=host.docker.internal
-      - DOCKER_HOST=tcp://host.docker.internal:2375
+      # 🔑 WINDOWS: NO establecer DOCKER_HOST, usar socket directo
+      - TESTCONTAINERS_DOCKER_SOCKET_OVERRIDE=/var/run/docker.sock
       - TESTCONTAINERS_RYUK_DISABLED=true
       - TESTCONTAINERS_CHECKS_DISABLE=true
       - NODE_OPTIONS=--max-old-space-size=3072
