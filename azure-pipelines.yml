@@ -67,11 +67,13 @@ steps:
       mergeTestResults: true
     condition: always()
 
-  - task: UseJavaVersion@1
+# ✅ Instalar Java 17 (self-hosted compatible)
+  - task: JavaToolInstaller@0
     displayName: "Install Java 17"
     inputs:
-      version: '17'
-      architecture: 'x64'
+      versionSpec: '17'
+      jdkArchitectureOption: 'x64'
+      jdkSourceOption: 'PreInstalled'
 
   # ✅ ✅ ✅ 1️⃣1️⃣ Instalar Sonar Scanner CLI
   - script: npm install -g sonar-scanner
