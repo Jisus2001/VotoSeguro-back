@@ -67,23 +67,6 @@ steps:
       mergeTestResults: true
     condition: always()
 
-# ✅ Instalar Java 17 (self-hosted compatible)
-  - powershell: |
-      Write-Host "Downloading Java 17..."
-      Invoke-WebRequest -Uri "https://download.oracle.com/java/17/latest/jdk-17_windows-x64_bin.zip" -OutFile "java17.zip"
-
-      Write-Host "Extracting..."
-      Expand-Archive java17.zip -DestinationPath "C:/Java/" -Force
-
-      Write-Host "Configuring JAVA_HOME..."
-      $javaPath = (Get-ChildItem -Directory "C:/Java" | Where-Object { $_.Name -like "jdk-17*" }).FullName
-      setx JAVA_HOME $javaPath
-      setx PATH "$env:PATH;$javaPath/bin"
-
-      Write-Host "JAVA_HOME configured to: $javaPath"
-    displayName: "Install Java 17 manually"
-
-
   # ✅ ✅ ✅ 1️⃣1️⃣ Instalar Sonar Scanner CLI
   - script: npm install -g sonar-scanner
     displayName: "Install SonarQube Scanner CLI"
