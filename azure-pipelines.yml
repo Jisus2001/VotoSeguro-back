@@ -67,6 +67,12 @@ steps:
       mergeTestResults: true
     condition: always()
 
+  - task: UseJavaVersion@1
+    displayName: "Install Java 17"
+    inputs:
+      version: '17'
+      architecture: 'x64'
+
   # ✅ ✅ ✅ 1️⃣1️⃣ Instalar Sonar Scanner CLI
   - script: npm install -g sonar-scanner
     displayName: "Install SonarQube Scanner CLI"
