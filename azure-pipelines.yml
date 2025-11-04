@@ -8,6 +8,8 @@ pool:
 
 variables:
   DOCKER_BUILDKIT: 1
+  SONAR_HOST_URL: "http://localhost:9000"
+  SONAR_TOKEN: "$(SonarToken)"   # lo guardas como secret variable
 
 steps:
   # 1️⃣ Checkout del código
@@ -20,65 +22,62 @@ steps:
     displayName: "Install Node.js"
 
   # 3️⃣ Instalar dependencias
-  - script: |
-      npm ci
+  - script: npm ci
     displayName: "Install npm dependencies"
 
   # 4️⃣ Build de las imágenes de Docker
-  - script: |
-      docker-compose build
+  - script: docker-compose build
     displayName: "Build Docker images"
 
   # 5️⃣ Levantar contenedores de tests (detached)
-  - script: |
-      docker-compose up -d
+  - script: docker-compose up -d
     displayName: "Start test containers"
 
   # 6️⃣ Diagnóstico de memoria dentro del contenedor unit-tests
-  - script: |
-      docker exec unit-tests free -h
+  - script: docker exec unit-tests free -h
     displayName: "Verificar memoria disponible en unit-tests"
 
-  # 7️⃣ Ejecutar Unit Tests con límite de memoria ajustado
-  - script: |
-      docker exec unit-tests sh -c "node --expose-gc --experimental-vm-modules --max-old-space-size=2048 node_modules/jest/bin/jest.js tests/Unitarias --runInBand --logHeapUsage --verbose --reporters=default --reporters=jest-junit"
-    displayName: "Run Unit Tests (Node memory limit 2048MB)"
+  # 7️⃣ Ejecutar Unit Tests
+  - script: >
+      docker exec unit-tests sh -c
+      "node --expose-gc --experimental-vm-modules --max-old-space-size=2048
+      node_modules/jest/bin/jest.js tests/Unitarias --runInBand --logHeapUsage --verbose --reporters=default --reporters=jest-junit"
+    displayName: "Run Unit Tests"
     continueOnError: false
 
   # 8️⃣ Bajar contenedores antes de tests de integración
-  - script: |
-      docker-compose down -v
+  - script: docker-compose down -v
     displayName: "Stop test containers before integration tests"
 
-  # 9️⃣ Ejecutar Integration Tests DIRECTAMENTE en el agente (no en Docker)
-  - script: |
-      node --expose-gc --experimental-vm-modules --max-old-space-size=3072 node_modules/jest/bin/jest.js tests/Integracion --runInBand --logHeapUsage --verbose --reporters=default --reporters=jest-junit
-    displayName: "Run Integration Tests (Node memory limit 3072MB)"
+  # 9️⃣ Ejecutar Integration Tests directo en el agente
+  - script: >
+      node --expose-gc --experimental-vm-modules --max-old-space-size=3072
+      node_modules/jest/bin/jest.js tests/Integracion --runInBand --logHeapUsage --verbose --reporters=default --reporters=jest-junit
+    displayName: "Run Integration Tests"
     continueOnError: false
     env:
       JEST_JUNIT_OUTPUT_DIR: ./reports/integration
       JEST_JUNIT_OUTPUT_NAME: integration-report.xml
 
-  # 🔟 Publicar resultados Unit Tests
+  # 🔟 Publicar resultados Unit & Integration
   - task: PublishTestResults@2
     inputs:
-      testResultsFiles: "**/reports/unit/*.xml"
-      testRunTitle: "Unit Tests"
+      testResultsFiles: "**/reports/**/*.xml"
+      testRunTitle: "All Tests"
       mergeTestResults: true
       failTaskOnFailedTests: true
     condition: always()
 
-  # 1️⃣1️⃣ Publicar resultados Integration Tests
-  - task: PublishTestResults@2
-    inputs:
-      testResultsFiles: "**/reports/integration/*.xml"
-      testRunTitle: "Integration Tests"
-      mergeTestResults: true
-      failTaskOnFailedTests: true
-    condition: always()
+  # ✅ ✅ ✅ 1️⃣1️⃣ Instalar Sonar Scanner CLI
+  - script: npm install -g sonar-scanner
+    displayName: "Install SonarQube Scanner CLI"
 
-  # 1️⃣2️⃣ Limpiar contenedores al final
-  - script: |
-      docker-compose down -v
-    displayName: "Clean up test containers"
-    condition: always()
+  # ✅ ✅ ✅ 1️⃣2️⃣ Ejecutar SonarQube Analysis
+  - script: >
+      sonar-scanner
+      -Dsonar.projectKey=votoseguro-back
+      -Dsonar.sources=.
+      -Dsonar.host.url=$(SONAR_HOST_URL)
+      -Dsonar.login=$(SONAR_TOKEN)
+      -Dsonar.javascript.lcov.reportPaths=coverage/lcov.info
+    displayName: "Run SonarQube Analysis"
