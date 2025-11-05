@@ -37,42 +37,45 @@ steps:
   - script: docker exec unit-tests free -h
     displayName: "Verificar memoria disponible en unit-tests"
 
-  # 7️⃣ Ejecutar Unit Tests
-  - script: >
-      docker exec unit-tests sh -c
-      "node --expose-gc --experimental-vm-modules --max-old-space-size=2048
-      node_modules/jest/bin/jest.js tests/Unitarias --runInBand --logHeapUsage --verbose --reporters=default --reporters=jest-junit"
-    displayName: "Run Unit Tests"
+    # 7️⃣ Ejecutar Unit Tests (dentro de contenedor)
+  - script: |
+      echo "🚀 Ejecutando pruebas unitarias en contenedor..."
+      docker exec unit-tests sh -c "
+        mkdir -p /app/reports/unit &&
+        node --expose-gc --experimental-vm-modules --max-old-space-size=2048 \
+        node_modules/jest/bin/jest.js tests/Unitarias \
+        --runInBand --logHeapUsage --verbose \
+        --reporters=default --reporters=jest-junit"
+      
+      echo "📁 Copiando reportes de Unit Tests al host..."
+      docker cp unit-tests:/app/reports ./reports
+    displayName: "Run Unit Tests (with report export)"
     continueOnError: false
 
-    env:
-      JEST_JUNIT_OUTPUT_DIR: ./reports/unit
-      JEST_JUNIT_OUTPUT_NAME: unit-report.xml
 
-  # 💾 Copiar reportes desde el contenedor integration-tests al host
+  # 8️⃣ Detener solo el contenedor de Unit Tests
   - script: |
-      docker cp integration-tests:/app/reports/unit ./reports/unit
-    displayName: "Copiar reportes de unitarias al host"
-    condition: always()
+      echo "🧹 Deteniendo contenedor de Unit Tests..."
+      docker stop unit-tests || true
+      docker rm unit-tests || true
+    displayName: "Stop only Unit Test container"
 
-  # 8️⃣ Bajar contenedores antes de tests de integración
-  - script: docker-compose down -v
-    displayName: "Stop test containers before integration tests"
 
   # 9️⃣ Ejecutar Integration Tests directo en el agente
-  - script: >
-      node --expose-gc --experimental-vm-modules --max-old-space-size=3072
-      node_modules/jest/bin/jest.js tests/Integracion --runInBand --logHeapUsage --verbose --reporters=default --reporters=jest-junit
+  - script: |
+      echo "🚀 Ejecutando pruebas de integración..."
+      mkdir -p ./reports/integration
+      node --expose-gc --experimental-vm-modules --max-old-space-size=3072 \
+        node_modules/jest/bin/jest.js tests/Integracion \
+        --runInBand --logHeapUsage --verbose \
+        --reporters=default --reporters=jest-junit
+      echo "📁 Reportes generados en ./reports/integration:"
+      dir ./reports/integration
     displayName: "Run Integration Tests"
     continueOnError: false
     env:
       JEST_JUNIT_OUTPUT_DIR: ./reports/integration
       JEST_JUNIT_OUTPUT_NAME: integration-report.xml
-   # 💾 Copiar reportes desde el contenedor integration-tests al host
-  - script: |
-      docker cp integration-tests:/app/reports/integration ./reports/integration
-    displayName: "Copiar reportes de integración al host"
-    condition: always()
 
   # 🔟 Publicar resultados Unit & Integration
   - task: PublishTestResults@2

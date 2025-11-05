@@ -2,37 +2,35 @@ services:
   unit-tests:
     build: .
     container_name: unit-tests
-    command: tail -f /dev/null
+    command: >
+      sh -c "node --experimental-vm-modules node_modules/jest/bin/jest.js
+      tests/Unitarias --runInBand --verbose --reporters=default
+      --reporters=jest-junit"
     volumes:
       - .:/app:cached
-      - /app/node_modules
+      - /app/node_modules 
       - ./reports:/app/reports
     environment:
       - JEST_JUNIT_OUTPUT_DIR=./reports/unit
       - JEST_JUNIT_OUTPUT_NAME=unit-report.xml
-      - NODE_OPTIONS=--max-old-space-size=2048
-    mem_limit: 3g
-    memswap_limit: 3g
-    
+
   integration-tests:
     build: .
     container_name: integration-tests
     depends_on:
       - unit-tests
-    command: tail -f /dev/null
+    command: >
+      sh -c " npx jest tests/Integracion --verbose --runInBand --reporters=default
+      --reporters=jest-junit"
     volumes:
       - .:/app:cached
-      - /app/node_modules
+      - /app/node_modules 
       - ./reports:/app/reports
-      # 🔑 WINDOWS: Usar named pipe en lugar de socket Unix
-      - //var/run/docker.sock:/var/run/docker.sock
     environment:
       - JEST_JUNIT_OUTPUT_DIR=./reports/integration
       - JEST_JUNIT_OUTPUT_NAME=integration-report.xml
-      # 🔑 WINDOWS: NO establecer DOCKER_HOST, usar socket directo
-      - TESTCONTAINERS_DOCKER_SOCKET_OVERRIDE=/var/run/docker.sock
-      - TESTCONTAINERS_RYUK_DISABLED=true
-      - TESTCONTAINERS_CHECKS_DISABLE=true
-      - NODE_OPTIONS=--max-old-space-size=3072
-    mem_limit: 4g
-    memswap_limit: 4g
+      
+       # 👇 Variables recomendadas por Testcontainers para contenedores dentro de Docker
+      - TESTCONTAINERS_HOST_OVERRIDE=host.docker.internal
+      - DOCKER_HOST=tcp://host.docker.internal:2375
+
