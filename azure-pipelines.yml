@@ -45,6 +45,16 @@ steps:
     displayName: "Run Unit Tests"
     continueOnError: false
 
+    env:
+      JEST_JUNIT_OUTPUT_DIR: ./reports/unit
+      JEST_JUNIT_OUTPUT_NAME: unit-report.xml
+
+  # 💾 Copiar reportes desde el contenedor integration-tests al host
+  - script: |
+      docker cp integration-tests:/app/reports/unit ./reports/unit
+    displayName: "Copiar reportes de unitarias al host"
+    condition: always()
+
   # 8️⃣ Bajar contenedores antes de tests de integración
   - script: docker-compose down -v
     displayName: "Stop test containers before integration tests"
@@ -58,6 +68,11 @@ steps:
     env:
       JEST_JUNIT_OUTPUT_DIR: ./reports/integration
       JEST_JUNIT_OUTPUT_NAME: integration-report.xml
+   # 💾 Copiar reportes desde el contenedor integration-tests al host
+  - script: |
+      docker cp integration-tests:/app/reports/integration ./reports/integration
+    displayName: "Copiar reportes de integración al host"
+    condition: always()
 
   # 🔟 Publicar resultados Unit & Integration
   - task: PublishTestResults@2

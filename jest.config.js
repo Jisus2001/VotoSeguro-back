@@ -54,8 +54,8 @@ export default {
     [
       "jest-junit",
       {
-        outputDirectory: "./reports/junit",
-        outputName: "junit-report.xml",
+        outputDirectory: "./reports/unit",
+        outputName: "unit-report.xml",
         classNameTemplate: "{classname}",
         titleTemplate: "{title}",
         ancestorSeparator: " › ",
