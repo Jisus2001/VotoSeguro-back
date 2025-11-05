@@ -27,7 +27,7 @@ global.FormData = class FormData {
 };
 
 // 🔧 Aumentar timeout global para Testcontainers
-jest.setTimeout(60000);
+jest.setTimeout(180000);
 
 // 🔧 Limpiar después de cada test
 afterEach(() => {
