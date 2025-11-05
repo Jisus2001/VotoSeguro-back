@@ -47,6 +47,11 @@ steps:
     env:
       JEST_JUNIT_OUTPUT_DIR: ./reports/unit
       JEST_JUNIT_OUTPUT_NAME: unit-report.xml
+     # 🧾 Copiar reportes del contenedor unit-tests al host
+  - script: |
+      mkdir -p reports/unit
+      docker cp unit-tests:/app/reports/unit/. ./reports/unit/
+    displayName: "Copy Unit Test Reports"
 
   # 8️⃣ Bajar contenedores antes de tests de integración
   #- script: docker-compose down -v
@@ -61,11 +66,16 @@ steps:
     env:
       JEST_JUNIT_OUTPUT_DIR: ./reports/integration
       JEST_JUNIT_OUTPUT_NAME: integration-report.xml
+     # 🧾 Copiar reportes del contenedor unit-tests al host
+  - script: |
+      mkdir -p reports/integration
+      docker cp unit-tests:/app/reports/integration/. ./reports/integration/
+    displayName: "Copy integration Test Reports"
 
   # 🔟 Publicar resultados Unit & Integration
   - task: PublishTestResults@2
     inputs:
-      testResultsFiles: "./reports/**/*.xml"
+      testResultsFiles: "$(System.DefaultWorkingDirectory)/reports/**/*.xml"
       testRunTitle: "All Tests"
       mergeTestResults: true
     condition: always()
