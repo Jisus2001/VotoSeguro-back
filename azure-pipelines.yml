@@ -48,15 +48,14 @@ steps:
       JEST_JUNIT_OUTPUT_DIR: ./reports/unit
       JEST_JUNIT_OUTPUT_NAME: unit-report.xml
 
-    
   # 8️⃣ Bajar contenedores antes de tests de integración
-  - script: docker-compose stop unit-tests
-    displayName: "Stop test containers before integration tests"
+  #- script: docker-compose down -v
+  #  displayName: "Stop test containers before integration tests"
 
   # 9️⃣ Ejecutar Integration Tests directo en el agente
   - script: >
-      docker exec unit-tests sh -c
-      "node --expose-gc --experimental-vm-modules --max-old-space-size=3072 node_modules/jest/bin/jest.js tests/Integracion --runInBand --logHeapUsage --verbose --reporters=default --reporters=jest-junit"
+      node --expose-gc --experimental-vm-modules --max-old-space-size=3072
+      node_modules/jest/bin/jest.js tests/Integracion --runInBand --logHeapUsage --verbose --reporters=default --reporters=jest-junit
     displayName: "Run Integration Tests"
     continueOnError: false
     env:
@@ -66,7 +65,7 @@ steps:
   # 🔟 Publicar resultados Unit & Integration
   - task: PublishTestResults@2
     inputs:
-      testResultsFiles: "**/reports/**/*.xml"
+      testResultsFiles: "./reports/**/*.xml"
       testRunTitle: "All Tests"
       mergeTestResults: true
     condition: always()
