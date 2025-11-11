@@ -4,12 +4,12 @@ trigger:
       - main
 
 pool:
-  name: Default
+  name: VotoSeguroPool
 
 variables:
   DOCKER_BUILDKIT: 1
   SONAR_HOST_URL: "http://localhost:9000"
-  SONAR_TOKEN: "$(SonarTokenn)"   # lo guardas como secret variable
+  SONAR_TOKEN: "$(SonarToken)"   # lo guardas como secret variable
 
 steps:
   # 1️⃣ Checkout del código
