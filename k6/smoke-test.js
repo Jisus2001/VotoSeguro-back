@@ -11,11 +11,11 @@ export let options = {
 };
 
 export default function () {
-    const url = "http://localhost:3000/Personas/ValidarSesion";
+    const url = "http://localhost:80/Personas/ValidarSesion";
 
     const payload = JSON.stringify({
-        Identificacion: "101",       // Usuario real de tu base
-        Contrasena: "123"            // Ajusta a tus datos
+        Identificacion: "101010101",       // Usuario real de tu base
+        Contrasenna: "123456789"            // Ajusta a tus datos
     });
 
     const headers = { 'Content-Type': 'application/json' };

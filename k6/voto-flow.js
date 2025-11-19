@@ -10,59 +10,66 @@ export let options = {
     }
 };
 
+// Múltiples usuarios válidos (requisito de la consigna)
+const usuarios = [
+    { Identificacion: "101010101", Contrasenna: "123456789" },
+    { Identificacion: "202020202", Contrasenna: "123456789" },
+    { Identificacion: "303030303", Contrasenna: "123456789" }
+];
+
 export default function () {
+
+    // 1. Seleccionar usuario aleatorio
+    const user = usuarios[Math.floor(Math.random() * usuarios.length)];
 
     // LOGIN
     let login = http.post(
-        "http://localhost:3000/Personas/ValidarSesion",
-        JSON.stringify({
-            Identificacion: "101",
-            Contrasena: "123"
-        }),
+        "http://localhost:80/Personas/ValidarSesion",
+        JSON.stringify(user),
         { headers: { "Content-Type": "application/json" }}
     );
 
-    check(login, { "login OK": r => r.status === 200 });
+    check(login, { 
+        "login OK": r => r.status === 200 
+    });
 
     const token = login.json().token;
 
-    // CONSULTA DE CANDIDATOS (HU5)
+    // 2. CONSULTA DE CANDIDATOS
     let candidatos = http.get(
-        "http://localhost:3000/Candidatos/Listar",
-        { headers: { 
-            Authorization: Bearer ${token},
-            authorization: Bearer ${token}
-        }}
+        "http://localhost:80/Candidatos/Listar",
+        { headers: { Authorization: "Bearer " + token }}
     );
 
     const lista = candidatos.json();
 
     check(candidatos, {
         "lista OK": r => r.status === 200,
-        "devuelve datos": r => Array.isArray(lista) && lista.length > 0
+        "tiene candidatos": r => Array.isArray(lista) && lista.length > 0
     });
 
-    const candidato = lista[0];
+    // Seleccionar candidato aleatorio
+    const candidato = lista[Math.floor(Math.random() * lista.length)];
 
-    // EMITIR VOTO (HU6)
+    // 3. EMITIR VOTO
     let voto = http.post(
-        "http://localhost:3000/Votos/Registrar",
+        "http://localhost:80/Votos/Registrar",
         JSON.stringify({
-            Identificacion: "101",
-            EleccionId: "67398533c4f44edce3521fba", 
+            Identificacion: user.Identificacion,
+            EleccionId: "67398533c4f44edce3521fba",
             CandidatoId: candidato._id
         }),
         {
             headers: {
-                Authorization: Bearer ${token},
-                authorization: Bearer ${token},
+                Authorization: "Bearer " + token,
                 "Content-Type": "application/json"
             }
         }
     );
 
     check(voto, {
-        "voto OK": r => r.status === 200 || r.status === 400
+        "voto registrado correctamente": r => r.status === 200 ||
+            (r.status === 400 && r.body.includes("Esta persona ya ha emitido su voto en esta elección"))
     });
 
     sleep(1);

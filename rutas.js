@@ -7,7 +7,7 @@ import rutasDeCandidatos from './Rutas/Candidatos.js';
 import rutasDeVotos from './Servicios/Controllers/Votos.js';
 
 function asignarRutasAExpress(app) {
-   app.use('/personas',authenticate, rutasDePersonas);
+   app.use('/personas', rutasDePersonas);
    app.use('/elecciones', rutasDeElecciones);
    app.use('/sedes', rutasDeSedes);
    app.use('/perfiles', rutasDePerfiles);
