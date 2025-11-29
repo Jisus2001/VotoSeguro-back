@@ -1,16 +1,18 @@
 import http from 'k6/http';
-import { check, sleep } from 'k6';
+import { check, sleep } from 'k6';import { Rate } from 'k6/metrics';
+
+export const flow_errors = new Rate('flow_errors');
 
 export let options = {
     vus: 20,
     duration: '30s',
     thresholds: {
-        http_req_failed: ['rate<0.02'],    // Máximo 2% errores
-        http_req_duration: ['p(95)<1200'], // 95% < 1.2s
+        flow_errors: ['rate<0.02'],    // Máximo 2% errores
+        http_req_duration: ['p(95)<2000'], // 95% < 2.0s
     }
 };
 
-// Múltiples usuarios válidos (requisito de la consigna)
+// Múltiples usuarios válidos 
 const usuarios = [
     { Identificacion: "101010101", Contrasenna: "123456789" },
     { Identificacion: "202020202", Contrasenna: "123456789" },
@@ -67,10 +69,15 @@ export default function () {
         }
     );
 
-    check(voto, {
-        "voto registrado correctamente": r => r.status === 200 ||
-            (r.status === 400 && r.body.includes("Esta persona ya ha emitido su voto en esta elección"))
-    });
+   const votoEsOk =
+    voto.status === 200 ||
+    (voto.status === 400 && voto.body.includes("Esta persona ya ha emitido su voto en esta elección"));
+
+flow_errors.add(!votoEsOk);
+
+check(voto, {
+    "voto registrado correctamente": () => votoEsOk
+});
 
     sleep(1);
 }

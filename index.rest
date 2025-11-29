@@ -279,6 +279,18 @@ GET {{ BASE_URL }}/votos/PorEleccion/68e6e46c7ee7c43e82142388 HTTP/1.1
 Content-Type: application/json
 
 ###
+# Consultar votos por elección
+GET {{ BASE_URL }}/votos/ParticipantesPorEleccion/68e6e46c7ee7c43e82142388 HTTP/1.1
+Content-Type: application/json
+
+###
+# Consultar votos por elección
+GET {{ BASE_URL }}/votos/ParticipantesPorEleccion2/68e6e46c7ee7c43e82142388 HTTP/1.1
+Content-Type: application/json
+
+
+
+###
 # Consultar votos por persona
 GET {{ BASE_URL }}/votos/PorPersona/155821845336 HTTP/1.1
 Content-Type: application/json
