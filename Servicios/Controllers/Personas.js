@@ -141,6 +141,7 @@ export const validarSesion = async (credenciales) => {
             data: {
                 mensaje: "Inicio de sesión exitoso",
               token,
+              Identificacion:persona.Identificacion,
                 nombre: persona.Nombre,
                 rol: persona.Perfil,
             },

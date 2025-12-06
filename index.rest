@@ -57,7 +57,7 @@ POST  {{ BASE_URL }}/personas/ValidarSesion HTTP/1.1
 Content-Type: application/json
 
  {
-        "Identificacion":101010101,
+        "Identificacion":117950605,
           "Contrasenna":"123456789"
     }
 
