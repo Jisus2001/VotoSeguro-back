@@ -3,6 +3,12 @@
 
 Este documento describe la solución técnica, la arquitectura y los estándares de calidad definidos por el equipo para la implementación de los requerimientos de la Tarea 1 del curso ISW-1411 (Calidad del Software).
 
+## 👥 Equipo de Desarrollo
+* **María José Chaves Hernández**
+* **Tylinn Najhaby González Brenes**
+* **Yarlín María Granados Solano**
+* **Jesús María Castilla Quiroz**
+
 ---
 
 ## 1. Definición de Hecho (Definition of Done - DoD) 🏆
