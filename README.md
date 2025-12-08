@@ -178,3 +178,34 @@ A continuación, se presenta la lista inicial de pruebas requeridas para verific
 | **Negativa** | Verificar que si el votante ya ha votado, el botón o acción de votación esté deshabilitado o no disponible. |
 | **Seguridad** | Verificar que no se pueda forzar la emisión de un segundo voto mediante manipulación del frontend o llamadas directas a la API. |
 
+
+### F. Pruebas No Funcionales (Rendimiento y Resiliencia)
+
+Para garantizar la estabilidad del sistema bajo carga máxima, se ejecutaron pruebas de rendimiento sobre los endpoints críticos (Login, Emisión de Voto).
+
+| Métrica | Objetivo / Umbral | Herramienta |
+| :--- | :--- | :--- |
+| **Tiempo de Respuesta (Latencia)** | $\leq 1$ segundo para el 95% de las solicitudes. | Postman (Monitor) / JMeter (o herramienta similar) |
+| **Throughput** | $\geq 20$ transacciones por segundo (TPS) sostenidas. | Postman (Monitor) / JMeter (o herramienta similar) |
+| **Tasa de Errores** | $\leq 2\%$ de errores HTTP (4xx/5xx) bajo carga. | Postman (Monitor) / JMeter (o herramienta similar) |
+
+La validación de la **Restricción de Voto Único (HU7)** también se prueba bajo concurrencia para asegurar que el *backend* maneje correctamente las condiciones de carrera sin permitir votos duplicados.
+
+### G. Automatización y Pipeline de Integración Continua (CI/CD)
+
+El proyecto utiliza **Azure DevOps** para garantizar la calidad en cada *commit* a la rama principal (`main`).
+
+1.  **Activador:** Cada `git push` a la rama `main` dispara automáticamente el pipeline.
+2.  **Agente:** Se utiliza un **Agente Self-Hosted** (o `ubuntu-latest`) para ejecutar los trabajos.
+3.  **Tareas Automatizadas (Jobs):**
+    * **Instalación:** `npm install` (restauración de dependencias).
+    * **Pruebas Unitarias y de Integración:** Ejecución de `npm test` (Jest) para validar la lógica interna de la API.
+    * **Generación de Reporte:** Generación de un reporte de pruebas para trazabilidad y auditoría.
+
+**Comando de Ejecución Local:**
+```bash
+# Ejecuta las pruebas Unitarias y de Integración.
+npm test
+
+
+
