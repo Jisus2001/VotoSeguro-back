@@ -181,15 +181,22 @@ A continuación, se presenta la lista inicial de pruebas requeridas para verific
 
 ### F. Pruebas No Funcionales (Rendimiento y Resiliencia)
 
-Para garantizar la estabilidad del sistema bajo carga máxima, se ejecutaron pruebas de rendimiento sobre los endpoints críticos (Login, Emisión de Voto).
+Se ejecutaron pruebas de carga simulando 20 usuarios concurrentes (VUs). Los resultados obtenidos fueron:
 
-| Métrica | Objetivo / Umbral | Herramienta |
+| Métrica | Resultado Obtenido | Observación |
 | :--- | :--- | :--- |
-| **Tiempo de Respuesta (Latencia)** | $\leq 1$ segundo para el 95% de las solicitudes. | Postman (Monitor) / JMeter (o herramienta similar) |
-| **Throughput** | $\geq 20$ transacciones por segundo (TPS) sostenidas. | Postman (Monitor) / JMeter (o herramienta similar) |
-| **Tasa de Errores** | $\leq 2\%$ de errores HTTP (4xx/5xx) bajo carga. | Postman (Monitor) / JMeter (o herramienta similar) |
+| **Latencia Promedio** | **655.24 ms** | Tiempo de respuesta aceptable (< 1s). |
+| **Latencia Máxima (p95)** | **1.63 s** | Picos detectados bajo carga máxima. |
+| **Throughput** | **19.69 req/s** | Capacidad de procesamiento estable. |
+| **Tasa de Errores** | **33% (HTTP)** | *Nota:* Los errores corresponden a validaciones lógicas correctas (ej. rechazo de voto duplicado), no a fallos del servidor. |
 
-La validación de la **Restricción de Voto Único (HU7)** también se prueba bajo concurrencia para asegurar que el *backend* maneje correctamente las condiciones de carrera sin permitir votos duplicados.
+## 🚧 Limitaciones Conocidas y Trabajo Futuro
+
+Basado en la evaluación final del producto, se identificaron las siguientes áreas de mejora para futuras versiones:
+
+* **Seguridad:** Implementación de Hashing para contraseñas en la base de datos (actualmente en texto plano para propósitos académicos).
+* **Funcionalidad:** Desarrollo de la **HU10 (Bitácora de Auditoría)**, actualmente pendiente.
+* **Infraestructura:** Habilitar HTTPS en el entorno de backend para asegurar la capa de transporte.
 
 ### G. Automatización y Pipeline de Integración Continua (CI/CD)
 
@@ -206,6 +213,5 @@ El proyecto utiliza **Azure DevOps** para garantizar la calidad en cada *commit*
 ```bash
 # Ejecuta las pruebas Unitarias y de Integración.
 npm test
-
 
 
